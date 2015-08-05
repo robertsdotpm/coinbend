@@ -1,0 +1,284 @@
+<!--
+https://soundcloud.com/grantbowtie/odesza-say-my-name-feat-zyra-grant-bowtie-remix
+<div style="position: absolute; top: 114px; right: 483px; width: 1px; border-right: 1px solid #DCE8F1; height: 199px; z-index: 100;">&nbsp;</div>
+-->
+<!DOCTYPE html>
+<html>
+<head>
+    <title></title>
+</head>
+
+<body>
+
+    <!--
+    <div class="alert alert-danger">
+        <button class="close icon-remove" data-dismiss="alert" style=
+        "font-style: italic" type="button"></button> <strong><i class=
+        "icon-remove"></i> Lack of funds.</strong> You have insufficient
+        currency in this vault to cover trades. Click on the <a class="red"
+        href="index.php?page=deposit">deposit</a> link to change that.<br>
+    </div>
+    -->
+
+    <div class="col-sm-12 trade-graph" contenteditable="true" style=
+    "position: relative; left: 10px; top: -10px; width: 912px; height: 420px;">
+        <iframe scrolling="no" src="/views/trade_chart.html"></iframe>
+    </div><br clear="all">
+    <br clear="all">
+    <!--<div class="hr hr-24" style="position: relative; top: -40px;"></div>-->
+
+    <div class="row" style="position: relative; top: -25px;">
+        <div class="col-sm-12 portfolio-div">
+            <div class="widget-box transparent" id="recent-box">
+                <div class="widget-header">
+                    <h4 class="lighter smaller"><i class=
+                    "icon-exchange orange"></i> Trading</h4>
+
+                    <div class="widget-toolbar no-border">
+                        <ul class="nav nav-tabs" id="recent-tab">
+                            <li class="active">
+                                <a data-toggle="tab" href="#task-tab" onclick=
+                                'setTimeout("hide_bottom_whitespace(true);", 100); active_tab = "new_trade";' id="task-tab-link">
+                                New Trade</a>
+                            </li>
+
+                            <li class="">
+                                <a data-toggle="tab" href="#member-tab"
+                                onclick='setTimeout("hide_bottom_whitespace(true);", 100); active_tab = "open_trades"; list_open_trades();' id="member-tab-link">
+                                Open Trades</a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="widget-body">
+                    <div class="widget-main padding-4">
+                        <div class="tab-content padding-8 overflow-visible">
+                            <div class="tab-pane active portfolio-div" id=
+                            "task-tab">
+                                <p></p>
+
+<div class="row new-trade">
+<div class="col-sm-6">
+    <form class=
+    "form-horizontal trade-form">
+        <div class="form-group">
+            <label class=
+            "col-sm-3 control-label no-padding-right"
+            for="form-field-1">Type</label>
+
+            <div class="col-sm-9">
+                <select class=
+                "form-control type_input" id=
+                "form-field-select-1"
+                style="width: 298px !important;">
+                <option value="buy">
+                        Buy
+                    </option>
+
+                    <option value="sell">
+                        Sell
+                    </option>
+                </select>
+            </div>
+        </div>
+
+        <div class="space-4"></div>
+
+        <div class="form-group">
+            <label class=
+            "col-sm-3 control-label no-padding-right">
+            Amount</label>
+
+            <div>
+                <div class=
+                "input-group col-sm-9"
+                style=
+                "width: 321px !important;">
+                    <input class=
+                    "form-control" type=
+                    "text" id="amount_input" onkeydown="adjust_total(); adjust_desc();" onpaste="adjust_total(); adjust_desc();" oninput="adjust_total(); adjust_desc();" autocomplete='off'> 
+
+
+
+<span class="input-group-addon" style="width: 50px !important;" id="amount_addon">
+
+            </span>
+                </div>
+            </div>
+        </div>
+
+        <div class="space-4"></div>
+
+        <div class="form-group">
+            <label class=
+            "col-sm-3 control-label no-padding-right">
+            Price per coin</label>
+
+            <div>
+                <div class=
+                "input-group col-sm-9"
+                style=
+                "width: 321px !important;">
+                    <input class=
+                    "form-control" type=
+                    "text" id="ppc_input" onkeydown="adjust_total(); adjust_desc();" onpaste="adjust_total(); adjust_desc();" oninput="adjust_total(); adjust_desc();" autocomplete='off'> <span class=
+                    "input-group-addon"
+                    style=
+                    "width: 50px !important;" id="ppc_addon"></span>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+
+                                    <div class="col-sm-6">
+                                        <form class=
+                                        "form-horizontal trade-form">
+                                            <div class="form-group">
+                                                <label class=
+                                                "col-sm-3 control-label no-padding-right">
+                                                Total value</label>
+
+                                                <div>
+                                                    <div class=
+                                                    "input-group col-sm-9"
+                                                    style=
+                                                    "width: 321px !important;">
+                                                        <input class=
+                                                        "form-control" type=
+                                                        "text" id="total_input" onkeydown="adjust_ppc(); adjust_desc();" onpaste="adjust_ppc(); adjust_desc();" oninput="adjust_ppc();  adjust_desc();" autocomplete='off'> <span class=
+                                                        "input-group-addon"
+                                                        style=
+                                                        "width: 50px !important;" id="total_addon"></span>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="space-4"></div>
+
+                                            <div class="form-group">
+                                                <label class=
+                                                "col-sm-3 control-label no-padding-right">
+                                                Trading fee</label>
+
+                                                <div>
+                                                    <div class=
+                                                    "input-group col-sm-9"
+                                                    style=
+                                                    "width: 321px !important;">
+                                                        <input class=
+                                                        "form-control"
+                                                        type="text" id="trade_fee_input" autocomplete='off'>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="space-4"></div>
+
+                                            <div class="form-group">
+                                                <label class=
+                                                "col-sm-3 control-label no-padding-right">
+                                                Status</label>
+
+                                                <div>
+                                                    <div class=
+                                                    "input-group col-sm-9"
+                                                    style=
+                                                    "width: 321px !important;">
+                                                        <input class=
+                                                        "form-control"
+                                                        type="text" id="trade_status_input" autocomplete='off'>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="clearfix form-actions">
+                                        <div class="col-sm-6">
+                                            <div style="float: right;">
+                                                <button class="btn btn-info"
+                                                style=
+                                                "width: 106px !important;"
+                                                type="button" onclick="trade_page_submit();"><i class=
+                                                "icon-ok bigger-110"></i>
+                                                Submit</button>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-sm-6">
+                                            <div style="float: left;">
+                                                <button class="btn" onclick=
+                                                "toggle_show_open_trades();"
+                                                style=
+                                                "width: 106px !important;"
+                                                type="reset"><i class=
+                                                "icon-remove bigger-110"></i>
+                                                Cancel</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div><br>
+                                <p>
+                            </div>
+
+                            <div class="tab-pane" id="member-tab">
+                                <p></p>
+
+                                <div class="open_trades">
+                                
+
+                                </div>
+
+                                <div class="row">
+                                    <div class="clearfix form-actions">
+                                        <div class="col-sm-6">
+                                            <div style="float: right;">
+                                                <button class="btn btn-info"
+                                                style=
+                                                "width: 106px !important;"
+                                                type="button" onclick="trade_page_submit();"><i class=
+                                                "icon-ok bigger-110"></i>
+                                                Submit</button>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-sm-6">
+                                            <div style="float: left;">
+                                                <button class="btn" onclick=
+                                                "toggle_show_open_trades();"
+                                                style=
+                                                "width: 106px !important;"
+                                                type="reset"><i class=
+                                                "icon-remove bigger-110"></i>
+                                                Cancel</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div><br>
+
+                                <p></p>
+                            </div>
+                        </div>
+                    </div><!-- /widget-main -->
+                </div><!-- /widget-body -->
+            </div><!-- /widget-box -->
+        </div><!-- /span -->
+    </div><script>
+//$(".page-content-row").css("height", "840px");
+    $(".page-content").css("padding-bottom", "0px");
+    $(".tab-content").css("padding-bottom", "0px");
+    $(".end-trade-ui").css("margin-bottom", "0px");
+    hide_bottom_whitespace(false);
+    $(".close").on("remove", function () {
+    setTimeout("hide_bottom_whitespace(false);", 100);
+    })
+
+    //$(".page-content").css("marin-bottom", "0px");
+
+    </script>
+</body>
+</html>

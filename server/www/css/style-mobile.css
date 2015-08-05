@@ -1,0 +1,454 @@
+/*********************************************************************************/
+/* Basic                                                                         */
+/*********************************************************************************/
+
+	body,input,textarea,select
+	{
+		line-height: 1.75em;
+		font-size: 11pt;
+		letter-spacing: 0;
+	}
+
+	body
+	{
+	}
+
+	h2, h3, h4, h5, h6
+	{
+		font-size: 1.5em;
+		text-align: center;
+	}
+
+	section,
+	article
+	{
+		clear: both;
+		margin: 2em 0 2em 0 !important;
+	}
+
+	section > :first-child,
+	article > :first-child
+	{
+		margin-top: 0 !important;
+	}
+
+	section:first-child,
+	article:first-child
+	{
+		margin-top: 0 !important;
+	}
+	
+	/* Lists */
+
+		ul.style1
+		{
+			text-align: center;
+		}
+		
+			ul.style1 li
+			{
+			}
+			
+			ul.style1 li:first-child
+			{
+			}
+			
+			ul.style1 img
+			{
+			}
+			
+			ul.style1 .image-left
+			{
+				float: none;
+				display: block;
+				margin: 0 auto;
+				width: 60%;
+			}
+			
+			ul.style1 h3
+			{
+				margin-bottom: 0.10em !important;
+				padding: 1.2em 0em 5px 0em;
+				font-size: 1.2em;
+				font-weight: 600;
+				color: #FFF;
+			}
+			
+			ul.style1 li a
+			{
+			}
+
+			ul.style1 li a:hover
+			{
+			}
+
+		ul.icons
+		{
+		}
+		
+			ul.icons > li
+			{
+				padding-left: 80px;
+				padding-top: 1em;
+			}
+
+			ul.icons > li:before
+			{
+				font-size: 24px;
+			}
+
+	/* Buttons */
+
+		.button
+		{
+			display: block;
+			text-align: center;
+		}
+
+		.button-small
+		{
+			font-size: 1.1em;
+		}
+
+	/* Main Title Heading */
+
+		.title-heading
+		{
+			margin-bottom: 2em;
+			text-align: center;
+		}
+
+		.title-heading h2
+		{
+			font-size: 1.8em;
+		}
+
+		.title-heading span
+		{
+			display: block;
+			padding-top: 0.25em;
+			font-size: 1.2em;
+		}
+		
+	/* Header */
+		
+		header
+		{
+			margin-bottom: 2em;
+			text-align: center;
+		}
+
+	/* Page Center Title */
+
+		.title
+		{
+		}
+		
+		.title span
+		{
+			margin-bottom: 3em;
+			padding: 0em 2em;
+			line-height: 3em;
+			font-size: 1.4em;
+		}
+
+/*********************************************************************************/
+/* UI                                                                            */
+/*********************************************************************************/
+
+	#titleBar
+	{
+		background: #FFF;
+		box-shadow: 0 0.05em 0.15em 0 rgba(0,0,0,0.15);
+	}
+
+		#titleBar .title
+		{
+			display: block;
+			text-align: center;
+			line-height: 44px;
+			font-size: 1.10em;
+			font-weight: 900;
+			color: #343e49;
+		}
+
+		#titleBar .toggle
+		{
+			position: absolute;
+			left: 0;
+			top: 0;
+			width: 80px;
+			height: 60px;
+		}
+
+			#titleBar .toggle:after
+			{
+				content: '';
+				display: block;
+				width: 20px;
+				height: 12px;
+				position: absolute;
+				left: 10px;
+				top: 15px;
+				background: url('images/toggle.svg') 0px 0px no-repeat;
+				opacity: 0.6;
+			}
+
+			#titleBar .toggle:active:after
+			{
+				opacity: 0.75;
+			}
+
+	#navPanel
+	{
+		background: #343e49;
+	}
+
+		#navPanel .link
+		{
+			display: block;
+			color: #888;
+			text-decoration: none;
+			height: 44px;
+			line-height: 44px;
+			border-top: solid 1px #424d58;
+			padding: 0 1em 0 1em;
+		}
+		
+			#navPanel .link:first-child
+			{
+				border-top: 0;
+			}
+			
+			#navPanel .link.depth-0
+			{
+				color: #fff;
+			}
+
+			#navPanel .indent-1 { display: inline-block; width: 1em; }
+			#navPanel .indent-2 { display: inline-block; width: 2em; }
+			#navPanel .indent-3 { display: inline-block; width: 3em; }
+			#navPanel .indent-4 { display: inline-block; width: 4em; }
+			#navPanel .indent-5 { display: inline-block; width: 5em; }
+			#navPanel .depth-0 { color: #fff; }
+
+/*********************************************************************************/
+/* Wrappers                                                                      */
+/*********************************************************************************/
+
+	#header-wrapper
+	{
+		display: none;
+	}
+	
+	#banner-wrapper
+	{
+		overflow: hidden;
+	}
+	
+	#main-wrapper
+	{
+		padding: 5em 5px 4em 5px;
+		background-attachment: scroll;
+	}
+	
+		.homepage #main-wrapper
+		{
+			padding: 5em 15px 2em 15px;
+		}
+	
+		.homepage #main-wrapper:before
+		{
+			display: none;
+		}
+	
+	#footer-wrapper
+	{
+		padding: 0 15px 0 15px;
+	}		
+
+	#featured-wrapper
+	{
+		overflow: hidden;
+		padding: 0 15px 0 15px;
+	}
+
+/*********************************************************************************/
+/* Header                                                                        */
+/*********************************************************************************/
+
+	#header
+	{
+		display: none;
+	}
+
+/*********************************************************************************/
+/* Nav                                                                           */
+/*********************************************************************************/
+
+	#nav
+	{
+		display: none;
+	}
+
+/*********************************************************************************/
+/* Banner                                                                        */
+/*********************************************************************************/
+
+	#banner
+	{
+		padding: 0 15px 0 15px;
+		font-size: 1.1em;
+	}
+
+		#banner .major
+		{
+			margin-bottom: 1.5em;
+		}
+		
+		#banner .major h2
+		{
+			margin: 0;
+			padding: 0;
+			font-size: 3em;
+			line-height: 1em;
+		}
+		
+		#banner .byline
+		{
+			padding: 1em 0 1em 0;
+			font-size: 1.5em;
+			line-height: 1.5em;
+		}
+		
+		#banner .button
+		{
+			padding: 0em;
+		}
+	
+		#banner h2
+		{
+			margin-bottom: 1em;
+			font-size: 1.4em;
+			font-weight: 600;
+		}
+
+/*********************************************************************************/
+/* Main                                                                          */
+/*********************************************************************************/
+
+	#main 
+	{
+		padding: 3em 10px 3em 10px;
+	}
+
+/*********************************************************************************/
+/* Content                                                                       */
+/*********************************************************************************/
+
+	#content
+	{
+	}
+	
+		#content header
+		{
+		}
+	
+		#content header h2
+		{
+			font-size: 1.4em;
+		}
+
+		#content h3
+		{
+			padding: 1em 0em 1em 0em;
+			font-size: 1.2em;
+		}
+
+/*********************************************************************************/
+/* Sidebar                                                                       */
+/*********************************************************************************/
+
+	#sidebar
+	{
+	}
+
+		#sidebar header h2
+		{
+			font-size: 1.4em;
+		}
+	
+		#sidebar .button
+		{
+			margin-top: 2em;
+		}
+		
+/*********************************************************************************/
+/* Footer                                                                        */
+/*********************************************************************************/
+
+	#footer
+	{
+		padding-bottom: 3em;
+	}
+
+		#footer header
+		{
+		}				
+
+		#footer header h2
+		{
+			font-size: 1.4em;
+		}
+		
+		#footer .button
+		{
+			margin-top: 0.5em;
+		}
+	
+/*********************************************************************************/
+/* Copyright                                                                     */
+/*********************************************************************************/
+
+	#copyright 
+	{
+		padding: 3em 15px 5em 15px;
+	}
+	
+/*********************************************************************************/
+/* Featured                                                                      */
+/*********************************************************************************/
+
+	#featured
+	{
+		text-align: center;
+	}
+
+		#featured header h2
+		{
+			font-size: 1.6em;
+		}
+		
+		#featured header .byline
+		{
+			padding-top: 0.5em;
+			font-size: 1.3em;
+		}
+		
+		#featured p
+		{
+			font-size: 1.1em;
+		}
+		
+		#featured .image-left
+		{
+		}
+		
+		#featured .button
+		{
+			margin-top: 2em;
+		}
+	
+	
+	
+	

@@ -1,0 +1,364 @@
+/*********************************************************************************/
+/* Basic                                                                         */
+/*********************************************************************************/
+
+	body,input,textarea,select
+	{
+		font-size: 16pt;
+	}
+
+	/* Forms */
+
+		form
+		{
+		}
+
+			form .button
+			{
+				margin-right: 0.50em !important;
+			}
+			
+
+	/* Main Title Heading */
+
+		.title-heading
+		{
+			padding: 2em 0em;
+		}
+		
+		.title-heading h2
+		{
+			float: left;
+			font-size: 2.4em;
+		}
+
+		.title-heading span
+		{
+			float: right;
+			font-size: 1.5em;
+		}
+
+	/* Header */
+		
+		header
+		{
+			margin-bottom: 2em;
+		}
+
+	/* Page Center Title */
+
+		.title
+		{
+		}
+		
+		.title span
+		{
+			margin-bottom: 5em;
+			padding: 0em 2em;
+			line-height: 3.4em;
+			font-size: 1.4em;
+		}
+
+/*********************************************************************************/
+/* Wrappers                                                                      */
+/*********************************************************************************/
+
+	#header-wrapper
+	{
+		position: fixed;
+		width: 100%;
+		top: 0;
+		left: 0;
+		box-shadow: 0 0.05em 0.15em 0 rgba(0,0,0,0.15);
+	}
+	
+	#banner-wrapper
+	{
+	}
+	
+	#features-wrapper
+	{
+	}
+	
+	#main-wrapper
+	{
+		padding: 8em 0 6em 0;
+	}
+
+	.homepage #main-wrapper
+	{
+		padding: 12em 0 8em 0;
+	}
+
+		.homepage #main-wrapper:after
+		{
+		}
+	
+	#footer-wrapper
+	{
+	}		
+	
+/*********************************************************************************/
+/* Header                                                                        */
+/*********************************************************************************/
+
+	#header
+	{
+		position: relative;
+		padding: 1.7em 0em;
+	}
+
+		#header h1
+		{
+			font-size: 1.1em;
+			color: #343e49;
+			margin: 0;
+			line-height: 0;
+		}
+		
+			#header h1 a
+			{
+				text-decoration: none;
+				font-weight: 900;
+				color: #343e49;
+			}
+		
+/*********************************************************************************/
+/* Nav                                                                           */
+/*********************************************************************************/
+
+	#nav
+	{
+		position: absolute;
+		right: 0;
+		top: 0;
+	}
+
+		#nav > ul > li
+		{
+			float: left;
+			padding: 0 1.2em 0 1.2em;
+		}
+		
+			#nav > ul > li:last-child
+			{
+				padding-right: 0;
+			}
+
+			#nav > ul > li > a,
+			#nav > ul > li > span
+			{
+				display: block;
+				color: #343e49;
+				line-height: 3.7em;
+				text-decoration: none;
+				font-size: 0.90em;
+				font-weight: 300;
+				outline: 0;
+			}
+
+				#nav > ul > li > a > span
+				{
+					font-size: 0.85em;
+					letter-spacing: 3px;
+				}
+
+			#nav > ul > li > ul
+			{
+				display: none;
+			}
+
+	.dropotron
+	{
+		top: 1em;
+		text-align: left;
+		line-height: 2em;
+		min-width: 13em;
+		background: #3d4752;
+		line-height: 1em;
+		padding: 0.85em 0 0.85em 0;
+		border-radius: 0.5em;
+		box-shadow: 0 0.05em 0.15em 0 rgba(0,0,0,0.15);
+	}
+
+		.dropotron a,
+		.dropotron span
+		{
+			display: block;
+			padding: 0.75em 1.5em 0.75em 1.5em;
+			font-size: 0.90em;
+			text-decoration:  none;
+			color: rgba(255,255,255,.75);
+			-moz-transition: color 0.25s ease-in-out;
+			-webkit-transition: color 0.25s ease-in-out;
+			-o-transition: color 0.25s ease-in-out;
+			-ms-transition: color 0.25s ease-in-out;
+			transition: color 0.25s ease-in-out;
+		}
+		
+		.dropotron li.active > a,
+		.dropotron li.active > span,
+		.dropotron li:hover > a,
+		.dropotron li:hover > span
+		{
+			color: #FFF;
+		}
+	
+	.dropotron-level-0
+	{
+		font-size: 0.9em;
+		margin-top: 0.1em;
+		border-radius: 0 0 0.5em 0.5em;
+	}
+
+		.dropotron-level-0:before
+		{
+			content: '';
+			position: absolute;
+			top: -1.2em;
+			left: 5.5em;
+			width: 1.3em;
+			height: 1.3em;
+			border-bottom: solid 0.8em #3d4752;
+			border-left: solid 0.8em rgba(0,0,0,0);
+			border-right: solid 0.8em rgba(0,0,0,0);
+		}
+		
+/*********************************************************************************/
+/* Main                                                                          */
+/*********************************************************************************/
+
+	#main 
+	{
+		padding: 4em 2.5em 4em 2.5em;
+	}
+
+/*********************************************************************************/
+/* Banner                                                                        */
+/*********************************************************************************/
+
+	#banner
+	{
+		font-size: 1.1em;
+	}
+	
+		#banner .major
+		{
+			margin-bottom: 3em;
+		}
+		
+		#banner .major h2
+		{
+			margin: 0;
+			padding: 0;
+			font-size: 3.5em;
+		}
+		
+		#banner .byline
+		{
+			padding: 2em 0em;
+			font-size: 1.5em;
+		}
+	
+		#banner h2
+		{
+			margin-bottom: 1em;
+			font-size: 1.4em;
+			font-weight: 600;
+		}
+
+/*********************************************************************************/
+/* Content                                                                       */
+/*********************************************************************************/
+
+	#content
+	{
+	}
+	
+		#content header h2
+		{
+			font-size: 1.4em;
+		}
+
+		#content h3
+		{
+			padding: 1em 0em 1em 0em;
+			font-size: 1.2em;
+		}
+
+/*********************************************************************************/
+/* Sidebar                                                                       */
+/*********************************************************************************/
+
+	#sidebar
+	{
+	}
+	
+		#sidebar header 
+		{
+			margin-bottom: 1.5em;
+		}
+
+		#sidebar header h2
+		{
+			font-size: 1.2em;
+		}
+	
+		#sidebar .button
+		{
+			margin-top: 1.5em;
+		}
+
+/*********************************************************************************/
+/* Footer                                                                        */
+/*********************************************************************************/
+
+	#footer
+	{
+		overflow: hidden;
+		padding-bottom: 5em;
+	}
+
+		#footer header h2
+		{
+			font-size: 1.4em;
+		}				
+
+/*********************************************************************************/
+/* Copyright                                                                     */
+/*********************************************************************************/
+
+	#copyright 
+	{
+		padding: 5em 0em 7em 0em;
+	}
+
+/*********************************************************************************/
+/* Featured                                                                      */
+/*********************************************************************************/
+
+	#featured
+	{
+		padding-bottom: 6em;
+	}
+
+		#featured header h2
+		{
+			font-size: 2.3em;
+		}
+		
+		#featured header .byline
+		{
+			padding-top: 1.1em;
+			font-size: 1.4em;
+		}
+		
+		#featured p
+		{
+			font-size: 1.2em;
+		}
+		
+		#featured .button
+		{
+			margin-top: 2em;
+		}

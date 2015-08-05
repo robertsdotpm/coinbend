@@ -1,0 +1,120 @@
+<!DOCTYPE HTML>
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+		<title>Highstock Example</title>
+
+        <style type="text/css">
+
+body
+{
+    border: 0px;
+    padding-left: 0px;
+    padding-right: 0px;
+    padding-top: 5px;
+    margin: 0px;
+    
+}
+
+.container
+{
+    padding-left: 0px;
+    padding-right: 0px;
+}
+
+.highcharts-scrollbar
+{
+    width: 100% !important;
+    position: absolute;
+    left: 0px !important;
+    right: 0px !important;
+}
+
+        </style>
+
+		<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js"></script>
+		<script type="text/javascript">
+
+//rangeSelector.buttonTheme
+
+$(function() {
+	$.getJSON('http://www.highcharts.com/samples/data/jsonp.php?filename=aapl-ohlc.json&callback=?', function(data) {
+
+		// create the chart
+		$('#container').highcharts('StockChart', {
+        credits: {
+            enabled: false
+        },
+            chart : {
+                backgroundColor : "#ffffff"
+            },
+
+
+        xAxis: {
+            maxZoom: 24 * 3600000
+        },
+        yAxis: [{
+            title: {
+                text: ''
+            },
+            opposite: true
+        }, {
+            title: {
+                text: ''
+            },
+            gridLineColor: '#FFFFFF',
+            gridLineDashStyle: 'longdash'
+        }],
+
+
+        plotOptions: {
+            line: {
+                color: '#435988',
+                shadow: true,
+                dataLabels: {
+                    color: '#00AEEF'
+                },
+                marker: {
+                    lineColor: '#000'
+                }
+            },
+            candlestick: {
+                color: '#DD2F29',
+                upColor: '#87DA3B',
+                lineColor: '#666'
+            }
+        },
+
+			rangeSelector : {
+				selected : 1
+			},
+
+			title : {
+				text : ''
+			},
+
+        series: [{
+            type: 'line',
+            name: 'Volume',
+            data: data,
+            yAxis: 1
+        }, {
+            type: 'candlestick',
+            name: 'Market',
+            data: data
+        }]
+
+			
+		});
+	});
+});
+
+		</script>
+	</head>
+	<body>
+<script src="/assets/js/highstock/highstock.js"></script>
+<script src="/assets/js/highstock/modules/exporting.js"></script>
+
+<div id="container" style="height: 420px; min-width: 500px"></div>
+	</body>
+</html>

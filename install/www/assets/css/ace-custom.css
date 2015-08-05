@@ -1,0 +1,272 @@
+.currency-pair-divider
+{
+    margin-left: 5px;
+    margin-right: 4px;
+    float: left;
+    font-size: 13px !important;
+}
+
+.currency-pair
+{
+    font-family: "Open Sans";
+    float: left;
+    margin-right: 15px;
+
+/*
+   border: 1px solid #6FB3E0;
+    border-radius: 4px !important;
+    color: #666666 !important;
+    font-size: 13px;
+    height: 28px !important;
+    transition: width 0.15s ease 0s;
+    width: 152px;
+    z-index: 11;
+    background-color: #FFFFFF;
+
+*/
+
+    /*
+    position: absolute;
+    top: 60px;
+    right: 40px;
+    */
+}
+
+.ats
+{
+    float: left;
+    min-width: 90px;
+}
+
+
+
+
+.ats-name
+{
+    color: #555555;
+    font-size: 13px;
+    font-family: "Open Sans";
+    float: left;
+    margin-right: 5px;
+}
+
+.ats-desc
+{
+    float: left;
+    color: #555555;
+    font-size: 13px;
+    font-family: "Open Sans";
+}
+
+
+/*
+.ats-name, .ats-desc
+{
+    color: #ffffff !important;
+}
+*/
+
+.currency-pair a:link, .currency-pair a:active, .currency-pair a:hover, .currency-pair a:visited
+{
+    color: #555555;
+    font-size: 13px;
+    font-family: "Open Sans";
+}
+
+
+.currency-pair-icon
+{
+    background: #82AF6F;
+    color: #FFFFFA;
+    width: 16px;
+    margin-right: 5px;
+    text-align: center;
+}
+
+.portfolio-div .btn
+{
+    margin-right: 10px !important;
+}
+
+
+
+.port-last
+{
+    margin-right: 0px !important;
+}
+
+
+/*
+input, input:active, input:focus{
+    outline: 0 !important;
+    outline-style:none !important;
+    outline-width:0 !important;
+}
+
+button::-moz-focus-inner,
+input[type="reset"]::-moz-focus-inner,
+input[type="button"]::-moz-focus-inner,
+input[type="submit"]::-moz-focus-inner,
+input[type="file"] > input[type="button"]::-moz-focus-inner {
+    border: none !important;
+}
+
+select:focus, option:focus, select::-moz-focus-inner, option::-moz-focus-inner {
+    outline: none !important;
+    border: none !important;
+}
+*/
+
+body
+{
+    overflow-y: scroll;
+}
+
+.open-trades table
+{
+    border: none !important;
+}
+
+.open-trades table td, .open-trades table th
+{
+    border-color: #cccccc !important;
+}
+
+.trade-graph iframe
+{
+    width: 100%;
+    height: 100%;
+    border: 0px;
+    overflow: hidden !important;
+}
+
+.trade-graph
+{
+    overflow: hidden !important;
+    padding: 0px !important;
+}
+
+.sidebar-collapse
+{
+    display: none !important;
+}
+
+.open-trades
+{
+    display: none;
+}
+
+#member-tab .table tbody tr:hover td, #member-tab .table tbody tr:hover th {
+    background-color: #EFF3F8 !important;
+    cursor: pointer !important;
+}
+
+.escrow-divide
+{
+    content: "";
+    width: 100%;
+    height: 8px;
+}
+
+.step-content .step-pane
+{
+    min-height: 191px !important;
+    height: 191px !important;
+    overflow: hidden !important;
+}
+
+.info-col-left
+{
+    width: 150px;
+    text-align: right;
+    float: left;
+}
+
+.info-col-div
+{
+    width: 50px;
+    text-align: center;
+    float: left;
+}
+
+.info-col-right
+{
+    width: 150px;
+    text-align: left;
+    float: left;
+}
+
+.header-conti-style
+{
+    position: absolute;
+    width: 60px;
+    overflow: none;
+    height: 37px;
+    background: #F9F9F9;
+    border-top: 1px solid #dddddd;
+    border-bottom: 1px solid #dddddd;
+}
+
+.wiz-sub
+{
+    display: none;
+}
+
+
+.wiz-sub-bod-title
+{
+    float: left;
+    font-family: 'Open Sans' !important;
+    font-size: 14px !important; 
+    font-weight: 700 !important;
+    line-height: 21px !important;
+    color: #737373 !important;
+    /*
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    */
+}
+
+.wiz-sub-bod-detail
+{
+    padding-left: 12px;
+    font-family: 'Open Sans' !important;
+    font-size: 14px !important; 
+    font-weight: 400 !important;
+    line-height: 21px !important;
+    color: #737373 !important;
+    float: left;
+    margin-bottom: 13px;
+    /*
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    */
+}
+
+.wiz-sub-col-a
+{
+    width: 155px;
+    text-align: right !important;
+}
+
+.wiz-sub-col-b
+{
+     width: 190px;
+    text-align: left !important;
+    
+}
+
+
+.wiz-sub-col-c
+{
+    width: 80px;
+    text-align: right !important;
+}
+
+
+.wiz-sub-col-d
+{
+    width: 195px;
+}

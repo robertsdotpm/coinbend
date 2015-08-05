@@ -1,0 +1,126 @@
+<!-- PAGE CONTENT BEGINS -->
+<div class="alert alert-block alert-success">
+    <button type="button" class="close" data-dismiss="alert">
+    <i class="icon-remove"></i>
+    </button>
+    <i class="icon-ok green"></i>
+    Welcome to the expermental prototype for Coinbend (pre-alpha.) Features may be missing, incomplete, or unstable.
+</div>
+<div class="row">
+    <div class="col-sm-12 portfolio-div">
+        <div id="recent-box" class="widget-box transparent">
+            <div class="widget-header">
+                <h4 class="lighter smaller">
+                    <i class="icon-signal orange"></i>
+                    My assets
+                </h4>
+                <div class="widget-toolbar no-border">
+                    <ul id="recent-tab" class="nav nav-tabs">
+                        <li class="active">
+                            <a href="#task-tab" data-toggle="tab" class="trading_network">Bulletproof wallet</a>
+                        </li>
+                        <li class="">
+                            <a onclick="list_contracts();" href="#member-tab" data-toggle="tab">Contracts</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <div class="widget-body">
+                <div class="widget-main padding-4">
+                    <div class="tab-content padding-8 overflow-visible">
+                        <div class="tab-pane active portfolio-div" id="task-tab">
+                            <table class="table table-bordered table-striped">
+                                <thead class="thin-border-bottom">
+                                    <tr>
+                                        <th style="width: 150px;">
+                                            <i class="icon-caret-right blue"></i>
+                                            currency
+                                        </th>
+                                        <th>
+                                            <i class="icon-caret-right blue"></i>
+                                            balance
+                                        </th>
+                                        <th style="width: 150px;">
+                                            <i class="icon-caret-right blue"></i>
+                                            pending
+                                        </th>
+                                        <th class="hidden-480" style="width: 288px;">
+                                            <i class="icon-caret-right blue"></i>
+                                            address
+                                        </th>
+                                        <th style="width: 125px;">
+                                            <i class="icon-caret-right blue"></i>
+                                            rpc
+                                        </th>
+                                        <th class="center" style="width: 50px; border: none !important; text-align: center; font-size: 19px; color: #428BCA;">
+                                            <i class="icon-unlock"></i>
+                                        </th>
+                                    </tr>
+                                </thead>
+                                <tbody id="assets_tbody">
+<tr>
+<td colspan="6">
+<center>
+<div class="alert alert-danger">
+    <button type="button" class="close" data-dismiss="alert">
+        <i class="icon-remove"></i>
+    </button>
+
+
+
+    <strong>
+        <i class="icon-exclamation-sign"></i>
+        Standard wallet not found.
+    </strong>
+
+    If you see this message then it means you have no reference clients installed.
+    <br>
+</div>
+</center>
+</td>
+</tr>
+                                </tbody>
+                            </table>
+                            <div style="float: left;  margin-top: -18px; height: 38px; width: 730px;">
+                                <div style="position: relative; top: 8px; height: 20px; left: 8px;" class="portfolio_main_stats">
+                                    <div style="margin-right: 10px; float: left;">Trading on:</div>
+                                    <div style="float: left; margin-right: 30px;"><b class="blue">testnet</b></div>
+                                    <div style="margin-right: 10px; float: left;">Connections:</div>
+                                    <div style="float: left; margin-right: 30px;"><b class="blue">0</b></div>
+                                    <div style="margin-right: 10px; float: left;">Listening:</div>
+                                    <div style="float: left; margin-right: 30px;"><b class="green">port 12311 <i class="icon-ok"></i></b></div>
+                                </div>
+                            </div>
+                            <div style="float: right; margin-top: -10px;">
+                                <button class="btn btn-sm btn-white" onclick="location.href='/satoshi/trade'">buy coins </button><button class="btn btn-sm btn-white" onclick="location.href='/satoshi/trade'">sell coins</button>
+                            </div>
+                            <p>
+                            <p>
+                            <p>
+                                <br clear="all">
+
+                                <!--
+                                    <button class="btn btn-sm btn-info">buy</button><button class="btn btn-sm btn-info">deposit</button><button class="btn btn-sm btn-info">withdraw</button><button class="btn btn-sm btn-info">sell</button>
+                                    
+                                    <button class="btn btn-sm btn-white">buy</button><button class="btn btn-sm btn-white">deposit</button><button class="btn btn-sm btn-white">withdraw</button><button class="btn btn-sm btn-white">sell</button>
+                                    -->
+                        </div>
+                        <div class="tab-pane" id="member-tab">
+                        </div>
+                    </div>
+                </div>
+                <!-- /widget-main -->
+            </div>
+            <!-- /widget-body -->
+        </div>
+        <!-- /widget-box -->
+    </div>
+    <!-- /span -->
+</div>
+
+<p>
+
+<!-- PAGE CONTENT ENDS -->
+</div><!-- /.col -->
+</div><!-- /.row -->
+</div><!-- /.page-content -->

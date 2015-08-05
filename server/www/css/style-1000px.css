@@ -1,0 +1,83 @@
+/*********************************************************************************/
+/* Basic                                                                         */
+/*********************************************************************************/
+
+	body
+	{
+		line-height: 1.5em;
+		font-size: 12pt;
+	}
+	
+	/* Header */
+		
+		header
+		{
+			margin-bottom: 2em;
+		}
+
+	/* Lists */
+
+		ul.icons
+		{
+		}
+		
+			ul.icons > li
+			{
+				padding-left: 80px;
+				padding-top: 1em;
+			}
+
+			ul.icons > li:before
+			{
+				font-size: 24px;
+			}
+
+	/* Pennant */
+
+		.pennant
+		{
+			margin-bottom: 1.5em;
+		}
+
+	/* Page Center Title */
+
+		.title
+		{
+		}
+		
+		.title span
+		{
+			margin-bottom: 3em;
+		}
+
+/*********************************************************************************/
+/* Wrappers                                                                      */
+/*********************************************************************************/
+
+	#main-wrapper
+	{
+		padding: 4em 0 4em 0;
+	}
+
+		.homepage #main-wrapper
+		{
+			padding: 9em 0 6em 0;
+		}
+		
+/*********************************************************************************/
+/* Banner                                                                        */
+/*********************************************************************************/
+
+	#banner
+	{
+	}
+	
+		#banner .major
+		{
+			margin-bottom: 2em;
+		}
+		
+		#banner .byline
+		{
+			padding: 1.75em 0;
+		}

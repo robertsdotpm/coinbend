@@ -1,0 +1,49 @@
+.input-group-addon
+{
+    padding: 0px !important;
+}
+
+.input-group-addon select
+{
+    /*
+    #d5d5d5
+    */
+    margin: 0px;
+    border: 0px !important;
+    width: 100% !important;
+    text-align: left !important;
+    background: #eeeeee !important;
+    color: #393939 !important;
+    text-overflow: ellipsis !important;
+    -moz-appearance: window !important;
+    -webkit-appearance: none !important;
+    cursor: pointer !important;
+}
+
+.bootbox-body
+{
+    font-size: 14px !important;
+}
+
+
+.modal {
+  text-align: center;
+}
+
+.modal:before {
+  display: inline-block;
+  vertical-align: middle;
+  content: " ";
+  height: 100%;
+}
+
+.modal-dialog {
+  display: inline-block;
+  text-align: left;
+  vertical-align: middle;
+}
+
+a, a:active, a:focus {
+    outline: none !important;
+}
+
