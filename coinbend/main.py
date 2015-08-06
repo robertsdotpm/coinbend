@@ -39,6 +39,7 @@ if __name__ == "__main__":
     #Protocol handlers.
     global trade_engine
     global coins
+    global demo
     nacl_crypt = NaclCrypt()
     p2p_protocol = HybridProtocol(config, sys_clock, nacl_crypt, p2p_net, coins, e_exchange_rate, trade_engine)
     contract_client = ContractClient(p2p_protocol, config)
@@ -293,6 +294,10 @@ if __name__ == "__main__":
         #Propogate messages from P2P network.
         for con in p2p_net:
             for msg in con:
+                #Don't parse p2p_net replies when in demo mode.
+                if demo:
+                    continue
+
                 print("msg = ")
                 print(msg)
                 replies = p2p_protocol.understand(msg, seen_messages, con)

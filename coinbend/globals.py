@@ -256,7 +256,9 @@ if __name__ != "main":
         print(p2p_net.node_type)
         print(p2p_net.nat_type)
         print(p2p_net.rendezvous.server_con)
-        p2p_net.advertise()
+        #Don't list this node for bootstrapping when in demo mode.
+        if not demo:
+            p2p_net.advertise()
         p2p_node_type = p2p_net.node_type
         p2p_nat_type = p2p_net.nat_type
         p2p_forwarding_type = forwarding_type = p2p_net.forwarding_type
