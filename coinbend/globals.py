@@ -14,7 +14,6 @@ from .exchange_rate import *
 from .net import *
 from .rendezvous_client import *
 from .sys_clock import *
-from .spydht.spydht import DHT
 import os
 import netifaces
 import re
@@ -22,10 +21,8 @@ import platform
 import urllib.request
 import hashlib
 import uuid
-import nacl.signing
 import time
-
-
+from spydht import DHT
 
 if __name__ != "main":
     global args
@@ -34,7 +31,7 @@ if __name__ != "main":
     config = ParseConfig(os.path.join(data_dir, "config.json"))
 
     #Error log path.
-    error_log_path = os.path.join(data_dir, config["error_file"])
+    error_log_path = os.path.join(data_dir, config["error_file"])    
 
     #Running on testnet?
     if str(config["testnet"]) == "0":
@@ -54,7 +51,7 @@ if __name__ != "main":
     guid = hashlib.sha256(str(uuid.uuid4()).encode("ascii")).hexdigest()
 
     #Used to sign updates for our UNL in the DHT.
-    dht_key = nacl.signing.SigningKey.generate()
+    dht_key = None
 
     nat_type = config["nat_type"]
     if args.nat_type != None:
@@ -216,7 +213,7 @@ if __name__ != "main":
 
         #Networking for direct connections from other nodes.
         direct_rendezvous = RendezvousClient(nat_type, config["rendezvous_servers"], interface)
-        direct_net = Net(nat_type, node_type, 0, max_direct, direct_bind, direct_port, config["forwarding_servers"], direct_rendezvous, interface, local_only)
+        direct_net = Net(nat_type, node_type, 0, max_direct, direct_bind, direct_port, config["forwarding_servers"], direct_rendezvous, interface, local_only, error_log_path=error_log_path)
         direct_net.disable_bootstrap()
         direct_net.disable_advertise() #For passive, not simultaneous.
         #There's no connection here for simultaneous because
@@ -226,7 +223,11 @@ if __name__ != "main":
         direct_net.start()
         direct_net.advertise()
         for node in direct_nodes:
-            direct_net.add_node(node["addr"], node["port"], node["type"])
+            try:
+                direct_net.add_node(node["addr"], node["port"], node["type"])
+            except Exception as e:
+                error = parse_exception(e, output=1)
+                log_exception(error_log_path, error)
 
         #Save detected network details.
         direct_node_type = node_type = direct_net.node_type
@@ -241,12 +242,16 @@ if __name__ != "main":
 
         #Connect to peer-to-peer network.
         p2p_rendezvous = RendezvousClient(nat_type, config["rendezvous_servers"], interface)
-        p2p_net = Net(nat_type, node_type, max_outbound, max_inbound, passive_bind, passive_port, config["forwarding_servers"], p2p_rendezvous, interface, local_only)
+        p2p_net = Net(nat_type, node_type, max_outbound, max_inbound, passive_bind, passive_port, config["forwarding_servers"], p2p_rendezvous, interface, local_only, error_log_path=error_log_path)
         if args.skipforwarding != None:
             p2p_net.disable_forwarding()
         p2p_net.start()
         for node in p2p_nodes:
-            con = p2p_net.add_node(node["addr"], node["port"], node["type"])
+            try:
+                con = p2p_net.add_node(node["addr"], node["port"], node["type"])
+            except Exception as e:
+                error = parse_exception(e, output=1)
+                log_exception(error_log_path, error)
         if args.skipbootstrap == None:
             p2p_net.bootstrap()
         else:
@@ -255,14 +260,13 @@ if __name__ != "main":
         print("advertising 2.")
         print(p2p_net.node_type)
         print(p2p_net.nat_type)
-        print(p2p_net.rendezvous.server_con)
         #Don't list this node for bootstrapping when in demo mode.
         if not demo:
+            print("p2p net advertising.")
             p2p_net.advertise()
         p2p_node_type = p2p_net.node_type
         p2p_nat_type = p2p_net.nat_type
         p2p_forwarding_type = forwarding_type = p2p_net.forwarding_type
-        print(p2p_net.rendezvous.server_con)
 
     #Monitor for new transactions.
     from .tx_monitor import TXMonitor
@@ -270,10 +274,14 @@ if __name__ != "main":
 
     #Start distributed hash table.
     if args.skipdht == None:
-        dht_key = nacl.signing.SigningKey.generate()
+        dht_key = None
         dht = DHT(host="0.0.0.0", port=0, key=dht_key, wan_ip=get_wan_ip(), boot_host="176.9.147.116", boot_port=31000)
     else:
         dht = None
+    print("Finished DHT.")
+
+    if demo:
+        print("Demo mode is enabled.")
 
     #Initialized in main.
     from .trade_engine import *

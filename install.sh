@@ -40,6 +40,18 @@ sudo python setup.py install
 #sudo python3.3 -m easy_install cx_Freeze
 #sudo python3.3 -m easy_install ntplib
 #wget https://bitbucket.org/pypa/setuptools/raw/0.7.4/ez_setup.py -O - | sudo python3.3
+sudo rm -rf /usr/local/lib/python3.3/dist-packages/setuptools*
+sudo rm -rf /usr/local/lib/python3.3/dist-packages/distribute*
+sudo rm -rf /usr/local/lib/python3.3/dist-packages/pkg_resources.py*
+sudo rm -rf /usr/local/lib/python3.3/site-packages/setuptools*
+sudo rm -rf /usr/local/lib/python3.3/site-packages/distribute*
+sudo rm -rf /usr/local/lib/python3.3/site-packages/pkg_resources.py*
+    ^ Script above is buggy ... use this:
+    https://pypi.python.org/pypi/setuptools#downloads
+    18.1
+    cd to zip
+    run setup.py install
+
 python 3.3 -m easy_install twisted
 
 
@@ -77,3 +89,4 @@ pynacl
 
 https://pypi.python.org/pypi/service_identity
 
+https://pypi.python.org/pypi/beautifulsoup4/4.3.2

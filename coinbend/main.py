@@ -28,7 +28,8 @@ import hashlib
 import copy
 from threading import Thread, Lock
 
-if __name__ == "__main__":
+
+if args.skipmain == None:
     #Check we're not running as root.
     whoami = os.path.split(map_path("~"))[-1].lower()
     invalid_whoami = ["root", "admin", "administrator"]
@@ -86,10 +87,12 @@ if __name__ == "__main__":
             raise Exception("Invalid trade argument: " + args.trade)
 
     #Start UI web server.
+    print("Attempting to start web server.")
     def start_ui_server(app, host, port, debug):
         run(app, host=host, port=port, debug=debug)
     ui_server_thread = Thread(target=start_ui_server, args=(app, ui_bind, ui_port, True))
     ui_server_thread.start()
+    print("Web server started.")
 
     #Make data dirs if they don't exist yet.
     init_data_dirs(data_dir, backup_data_dir)
@@ -105,7 +108,7 @@ if __name__ == "__main__":
         #Send get_refund_sig when contract server indicates setup ready.
         for our_trade in trade_engine.trades:
             #Send open order to network.
-            if our_trade.status == "green_address_deposit_confirm" and (len(p2p_net.inbound) + len(p2p_net.outbound)):
+            if our_trade.status == "green_address_deposit_confirm":
                 if our_trade.actor == "seller":
                     #Generate open order message.
                     open_msg, order = p2p_protocol.new_open_order(our_trade, our_trade.recv_addr, our_trade.green_address)
@@ -122,17 +125,26 @@ if __name__ == "__main__":
                     print(open_msg)
 
                     #Rebroadcast every minute (up to 10 times.)
-                    def status_check(hybrid_reply):
-                        elapsed = int(time.time() - hybrid_reply.last_run_time)
-                        interval = min_retransmit_interval + (propagation_delay * 2)
-                        if elapsed >= interval:
-                            hybrid_reply.last_run_time = time.time()
-                            return 1
-                        else:
-                            if our_trade.status == "microtransfer_complete":
-                                return -1
+                    def status_builder():
+                        def status_check(hybrid_reply):
+                            #No p2p net connections.
+                            print(our_trade.dest_ip)
+                            if our_trade.dest_ip == "":
+                                if not (len(p2p_net.inbound) + len(p2p_net.outbound)):
+                                    return 0
+
+                            elapsed = int(time.time() - hybrid_reply.last_run_time)
+                            interval = min_retransmit_interval + (propagation_delay * 2)
+                            if elapsed >= interval:
+                                hybrid_reply.last_run_time = time.time()
+                                return 1
                             else:
-                                return 0
+                                if our_trade.status == "microtransfer_complete":
+                                    return -1
+                                else:
+                                    return 0
+
+                        return status_check
 
                     #Route trade to single node.
                     if our_trade.dest_ip != "":
@@ -147,7 +159,7 @@ if __name__ == "__main__":
                         new_hybrid_reply.add_routes(routes)
                     else:
                         new_hybrid_reply = HybridReply([open_msg], "p2p_net", "everyone", max_retransmissions)
-                    new_hybrid_reply.set_status_checker(status_check)
+                    new_hybrid_reply.set_status_checker(status_builder())
                     hybrid_replies.append(new_hybrid_reply)
 
                 #Update status.
@@ -314,6 +326,8 @@ if __name__ == "__main__":
         for hybrid_reply in hybrid_replies:
             #Evaluable hybrid reply -- should this be sent, deleted, what?
             hybrid_reply_status = hybrid_reply.status_checker(hybrid_reply)
+            print("Hybrid reply status : ")
+            print(hybrid_reply_status)
 
             #Success.
             if hybrid_reply_status == 1:

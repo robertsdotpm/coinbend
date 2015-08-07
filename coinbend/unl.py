@@ -54,7 +54,10 @@ class UNL():
         if ip2int(our_unl["wan_ip"]) < ip2int(their_unl["wan_ip"]):
             master = 1
         else:
-            master = 0
+            if ip2int(our_unl["wan_ip"]) == ip2int(their_unl["wan_ip"]):
+                master = 1
+            else:
+                master = 0
 
         #Are they already connected?
         con = self.net.con_by_ip(their_unl["wan_ip"])

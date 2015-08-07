@@ -76,7 +76,7 @@ class ContractProtocol(LineReceiver):
                 self.send_line(reply)
         except Exception as e:
             error = parse_exception(e)
-            log_exception(log_file_path, error)
+            log_exception(error_log_path, error)
             print(error)
 
     def connectionMade(self):

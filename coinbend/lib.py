@@ -52,11 +52,14 @@ def log_exception(file_path, msg):
     with open(file_path, "a") as error_log:
         error_log.write(msg)
 
-def parse_exception(e):
+def parse_exception(e, output=0):
     tb = traceback.format_exc()
     exc_type, exc_obj, exc_tb = sys.exc_info()
     fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
     error = "%s %s %s %s %s" % (str(tb), str(exc_type), str(fname), str(exc_tb.tb_lineno), str(e))
+
+    if output:
+        print(error)
 
     return str(error)
 

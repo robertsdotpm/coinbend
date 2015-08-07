@@ -28,6 +28,7 @@ from twisted.protocols.basic import LineReceiver
 from twisted.internet import reactor
 from .parse_config import *
 from .lib import *
+from .globals import *
 
 class RendezvousProtocol(LineReceiver):
     def __init__(self, factory):
@@ -188,7 +189,7 @@ class RendezvousProtocol(LineReceiver):
                 self.synchronize_simultaneous(ip_addr)
         except Exception as e:
             error = parse_exception(e)
-            log_exception(log_file_path, error)
+            log_exception(error_log_path, error)
             print(self.log_entry("ERROR =", error))
 
     def connectionLost(self, reason):
@@ -250,7 +251,7 @@ class RendezvousProtocol(LineReceiver):
                     del self.factory.candidates[node_ip]
         except Exception as e:
             error = parse_exception(e)
-            log_exception(log_file_path, error)
+            log_exception(error_log_path, error)
             print(self.log_entry("ERROR =", error))
 
     def lineReceived(self, line):
@@ -482,7 +483,7 @@ class RendezvousProtocol(LineReceiver):
 
         except Exception as e:
             error = parse_exception(e)
-            log_exception(log_file_path, error)
+            log_exception(error_log_path, error)
             print(self.log_entry("ERROR =", error))
 
 

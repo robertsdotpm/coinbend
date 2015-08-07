@@ -1,4 +1,5 @@
 import sys
+import pkg_resources
 from cx_Freeze import setup, Executable
 from subprocess import call
 import os
@@ -11,18 +12,19 @@ setup(name='coinbend',
     url='http://github.com/robertsdotpm/coinbend',
     author='Matthew Roberts',
     author_email='matthew@roberts.pm',
-    license='MIT',
+    license='pending licensing',
     packages=['coinbend'],
     install_requires=[
         'oursql',
         'scrypt',
         'pyaudio',
-        'colorama'
+        'colorama',
+        'bitcoin'
     ],
     test_suite='nose.collector',
     tests_require=['nose'],
     zip_safe=False,
-    executables = [Executable("main.py", base = "Win32GUI", targetName="Coinbend.exe")]
+    executables = [Executable("main.py", base = "Win32GUI", targetName="coinbend")]
 )
 
 

@@ -74,7 +74,7 @@ def record_msg_hash(msg):
         return 0
 
 class Net():
-    def __init__(self, nat_type="unknown", node_type="unknown", max_outbound=10, max_inbound=10, passive_bind="127.0.0.1", passive_port=50500, forwarding_servers=None, rendezvous=None, interface="default", local_only=0):
+    def __init__(self, nat_type="unknown", node_type="unknown", max_outbound=10, max_inbound=10, passive_bind="127.0.0.1", passive_port=50500, forwarding_servers=None, rendezvous=None, interface="default", local_only=0, error_log_path="error.log"):
         self.nodes = {}
         self.outbound = []
         self.inbound = []
@@ -100,6 +100,7 @@ class Net():
         self.enable_advertise = 1
         self.enable_forwarding = 1
         self.seen_messages = {}
+        self.error_log_path = error_log_path
         self.local_only = local_only
         self.forwarding_type = "manual"
 
@@ -167,6 +168,9 @@ class Net():
                     print(con)
                     print("No sim open error - but does not imply success.")
                 except Exception as e:
+                    error = parse_exception(e)
+                    log_exception(self.error_log_path, error)
+                    print(error)
                     print("Simultaneous challenge failed - prob timeout.")
                     print(e)
                     print("c")
@@ -199,7 +203,9 @@ class Net():
                 self.outbound.append(node)
                 return con
             except Exception as e:
-                print(e)
+                error = parse_exception(e)
+                log_exception(self.error_log_path, error)
+                print(error)
                 return None
             
         return None
@@ -218,7 +224,6 @@ class Net():
         This algorithm is designed to preserve passive node's
         inbound connection slots.
         """
-
         #Disable bootstrap.
         if not self.enable_bootstrap:
             return
@@ -236,7 +241,7 @@ class Net():
             simultaneous_outbound = []
             if connection_slots > 0:
                 #Connect to rendezvous server.
-                rendezvous_con = Sock(self.rendezvous.rendezvous_servers[0]["addr"], self.rendezvous.rendezvous_servers[0]["port"], blocking=1, interface=self.interface)
+                rendezvous_con = Sock(self.rendezvous.rendezvous_servers[0]["addr"], self.rendezvous.rendezvous_servers[0]["port"], blocking=1, interface=self.interface, timeout=3)
 
                 #Retrieve random nodes to bootstrap with.
                 rendezvous_con.send_line("BOOTSTRAP " + str(self.max_outbound * 2))
@@ -276,7 +281,9 @@ class Net():
                     i += 1
 
         except Exception as e:
-            print(e)
+            error = parse_exception(e)
+            log_exception(self.error_log_path, error)
+            print(error)
             print("bootstrapping error ^")
 
     def advertise(self):
@@ -299,7 +306,9 @@ class Net():
             if self.node_type == "simultaneous":
                 self.rendezvous.simultaneous_listen()
         except Exception as e:
-            print(e)
+            error = parse_exception(e)
+            log_exception(self.error_log_path, error)
+            print(error)
             print("Failed to listen.")
         self.is_accepting_clients = 1
 

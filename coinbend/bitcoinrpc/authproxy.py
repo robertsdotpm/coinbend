@@ -106,6 +106,16 @@ class AuthServiceProxy(object):
             name = "%s.%s" % (self.__service_name, name)
         return AuthServiceProxy(self.__service_url, name, connection=self.__conn)
 
+    def _close_con(self):
+        if self.__conn:
+            try:
+                self.__conn.close()
+            except Exception as e:
+                print(e)
+
+        self.__conn = None
+        return None
+
     def __call__(self, *args):
         AuthServiceProxy.__id_count += 1
 
@@ -122,6 +132,7 @@ class AuthServiceProxy(object):
                              'Content-type': 'application/json'})
 
         response = self._get_response()
+        self._close_con()
         if response['error'] is not None:
             print(response['error'])
             print(postdata)
@@ -153,6 +164,7 @@ class AuthServiceProxy(object):
                              'Content-type': 'application/json'})
         results = []
         responses = self._get_response()
+        self._close_con()
         for response in responses:
             if response['error'] is not None:
                 pass
@@ -164,16 +176,22 @@ class AuthServiceProxy(object):
         return results
 
     def _get_response(self):
-        http_response = self.__conn.getresponse()
-        if http_response is None:
-            raise JSONRPCException({
-                'code': -342, 'message': 'missing HTTP response from server'})
+        try:
+            http_response = self.__conn.getresponse()
+            if http_response is None:
+                raise JSONRPCException({
+                    'code': -342, 'message': 'missing HTTP response from server'})
 
-        responsedata = http_response.read().decode('utf8')
-        response = json.loads(responsedata, parse_float=decimal.Decimal)
-        if "error" in response and response["error"] is None:
-            #log.debug("<-%s- %s"%(response["id"], json.dumps(response["result"], default=EncodeDecimal)))
-            pass
-        else:
-            log.debug("<-- "+responsedata)
-        return response
+            responsedata = http_response.read().decode('utf8')
+            response = json.loads(responsedata, parse_float=decimal.Decimal)
+            if "error" in response and response["error"] is None:
+                #log.debug("<-%s- %s"%(response["id"], json.dumps(response["result"], default=EncodeDecimal)))
+                pass
+            else:
+                log.debug("<-- "+responsedata)
+            return response
+        except Exception as e:
+            self._close_con()
+            error = str(e)
+            raise JSONRPCException({
+                    'code': -400, 'message': error})

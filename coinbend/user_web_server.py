@@ -43,10 +43,15 @@ if config["debug"]:
     print(csrf_token)
 
 class CherryPyServer(ServerAdapter):
+    global error_log_path
     def run(self, handler):
         server = CherryPyWSGIServer((self.host, self.port), handler, server_name='localhost')
         try:
             server.start()
+        except Exception as e:
+            error = parse_exception(e)
+            log_exception(error_log_path, error)
+            print(error)
         finally:
             server.stop()
 
