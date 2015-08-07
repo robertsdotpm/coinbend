@@ -128,7 +128,6 @@ if args.skipmain == None:
                     def status_builder():
                         def status_check(hybrid_reply):
                             #No p2p net connections.
-                            print(our_trade.dest_ip)
                             if our_trade.dest_ip == "":
                                 if not (len(p2p_net.inbound) + len(p2p_net.outbound)):
                                     return 0
@@ -326,8 +325,6 @@ if args.skipmain == None:
         for hybrid_reply in hybrid_replies:
             #Evaluable hybrid reply -- should this be sent, deleted, what?
             hybrid_reply_status = hybrid_reply.status_checker(hybrid_reply)
-            print("Hybrid reply status : ")
-            print(hybrid_reply_status)
 
             #Success.
             if hybrid_reply_status == 1:
