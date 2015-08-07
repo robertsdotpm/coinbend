@@ -132,11 +132,13 @@ def parse_msg(msg, version, con, msg_handlers, sys_clock, config):
             msg = msg.decode("utf-8")
     except:
         #Received invalid characters.
+        print("Parse msg error 1")
         return []
 
     #Get version and time for message.
     matches = re.findall(r"^([0-9]+) ([0-9]+(?:[.][0-9]+)?) ([a-zA-Z_]+)", msg)
     if not len(matches):
+        print("Parse msg error 2")
         return []
     protocol_version, ntp, rpc = matches[0]
     protocol_version = int(protocol_version)
@@ -144,6 +146,7 @@ def parse_msg(msg, version, con, msg_handlers, sys_clock, config):
 
     #Check protocol version.
     if protocol_version != version:
+        print("Parse msg error 3")
         return []
 
     #Message sending time compared to actual time.
@@ -152,12 +155,13 @@ def parse_msg(msg, version, con, msg_handlers, sys_clock, config):
     dif = t - ntp
 
     #NTP is too far in the future (invalid.)
-    if dif <= -(60 * 15):
-        return []
+    if not int(config["debug"]):
+        if dif <= -(60 * 15):
+            return []
 
-    #NTP is too far in the past (expired.)
-    if dif >= 60 * 15:
-        return []
+        #NTP is too far in the past (expired.)
+        if dif >= 60 * 15:
+            return []
 
     if rpc in msg_handlers:
         return msg_handlers[rpc](msg, protocol_version, ntp, con)

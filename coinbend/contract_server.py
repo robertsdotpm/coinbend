@@ -52,7 +52,9 @@ class ContractProtocol(LineReceiver):
                 msg = msg.encode("ascii")
         except Exception as e:
             print("send line ex: ")
-            print(e)
+            error = parse_exception(e)
+            log_exception(error_log_path, error)
+            print(error)
             return
 
         self.sendLine(msg)
@@ -64,17 +66,23 @@ class ContractProtocol(LineReceiver):
             if type(line) == bytes:
                 line = line.decode("utf-8")
         except Exception as e:
-            print(e)
+            print("error occured.")
+            error = parse_exception(e)
+            log_exception(error_log_path, error)
+            print(error)
             return
 
         #Indicate IP.
         line += " " + self.transport.getPeer().host + " " + str(self.transport.getPeer().port)
+
+        print("Parsing replies.")
 
         #Parse replies.
         try:
             for reply in parse_msg(line, self.factory.version, None, self.factory.msg_handlers, self.factory.hybrid_protocol.sys_clock, self.factory.hybrid_protocol.config):
                 self.send_line(reply)
         except Exception as e:
+            print("error 2 occured.")
             error = parse_exception(e)
             log_exception(error_log_path, error)
             print(error)
@@ -129,6 +137,8 @@ class ContractFactory(Factory):
         sig_1 = base64.b64decode(sig_1.encode("ascii"))
         sig_2 = base64.b64decode(sig_2.encode("ascii"))
 
+        print("In parse register msg.")
+
         #Check instance id.
         if instance_id in self.instances:
             print("Instance already exists in setup.")
@@ -138,8 +148,6 @@ class ContractFactory(Factory):
         redeem_script = green_redeem_script(ecdsa_1, ecdsa_2, self.ecdsa_encrypted, self.ecdsa_offline)
         sig_3 = sign_setup_tx(tx_hex, redeem_script, self.ecdsa_encrypted)
         ret = validate_setup_tx(self.config, tx_hex, ecdsa_1, ecdsa_2, sig_1, sig_2, sig_3)
-        print("Herrrr 666--------")
-        print(ret)
         if type(ret) != dict:
             print("Check setup failed.")
             return []
@@ -195,6 +203,8 @@ class ContractFactory(Factory):
         their_handshake_msg = base64.b64decode(their_handshake_msg.encode("ascii")).decode("utf-8")
         their_handshake = self.parse_handshake_msg(their_handshake_msg)
         contract = self.hybrid_protocol.parse_contract(contract_msg)
+
+        print(collateral_info)
 
         #Does the instance exist?
         if instance_id not in self.instances:
@@ -259,7 +269,11 @@ class ContractFactory(Factory):
             return []
 
         #Record proof they agree on the transfer size.
+        print("Storing collateral_info")
+        print(contract_hash)
+        print(instance_id)
         self.instances[instance_id]["collateral_info"][contract_hash] = collateral_info
+        print(self.instances)
 
         #Check whether contract has any existing satisfied setup TXs.
         #As in, someone who has setup the right outputs in an existing setup tx.
@@ -301,6 +315,10 @@ class ContractFactory(Factory):
                 if vout_amount < calibrated_amount:
                     print("Insufficent vout_amount.")
                     index += 1
+                    continue
+
+                #Is there a valid collateral amount?
+                if instance["collateral_info"] == {}:
                     continue
 
                 #Record details.
@@ -438,6 +456,13 @@ class ContractFactory(Factory):
             contract_hash = link["contract_hash"]
             setup_details += " %s@%s" % (setup_txid, contract_hash)
 
+            print("hererererer")
+            print("-----------------------")
+            print(link["instance_id"])
+            print(contract_hash)
+            print(self.instances)
+            print(instance)
+            print(instance["collateral_info"])
             info = instance["collateral_info"][contract_hash]
             if type(info) == str:
                 info = info.encode("ascii")

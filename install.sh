@@ -14,8 +14,12 @@ sudo apt-get install python-setuptools python-pip python-dev python3-dev libmysq
 sudo pip install scrypt colorama
 sudo apt-get install libssl-dev
 
+#spydht: fork from robertsdotpm
+#python-bitcoinlib: fork from robertsdotpm
 #https://github.com/petertodd/python-bitcoinlib
 cd ~
+#NOTE: recent versions of the library make huge changes to mutability
+#Might want to use an old library
 sudo git clone https://github.com/petertodd/python-bitcoinlib.git
 cd python-bitcoinlib
 sudo python setup.py install
