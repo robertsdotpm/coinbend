@@ -249,6 +249,10 @@ if __name__ != "main":
         for node in p2p_nodes:
             try:
                 con = p2p_net.add_node(node["addr"], node["port"], node["type"])
+                print("ADding node")
+                print(node["addr"])
+                print(node["port"])
+                print(con)
             except Exception as e:
                 error = parse_exception(e, output=1)
                 log_exception(error_log_path, error)
