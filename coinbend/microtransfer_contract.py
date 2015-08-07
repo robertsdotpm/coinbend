@@ -267,6 +267,9 @@ def check_setup_works(tx_hex, redeem_script, owner_first_sig, owner_second_sig, 
             "txid": calculate_txid(signed_tx_hex)
         }
     except Exception as e:
+        error = parse_exception(e)
+        log_exception(error_log_path, error)
+        print(error)
         print("Check setup works failed.")
         print(e)
         return None

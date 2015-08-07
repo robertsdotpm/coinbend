@@ -128,8 +128,6 @@ if args.skipmain == None:
                     def status_builder():
                         def status_check(hybrid_reply):
                             #No p2p net connections.
-                            print(our_trade.dest_ip)
-                            print((len(p2p_net.inbound) + len(p2p_net.outbound)))
                             if our_trade.dest_ip == "":
                                 if not (len(p2p_net.inbound) + len(p2p_net.outbound)):
                                     return 0
