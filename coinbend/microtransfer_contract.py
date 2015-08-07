@@ -41,9 +41,9 @@ def find_microtransfer(needle, trades):
 
 def validate_setup_tx(config, tx_hex, ecdsa_1, ecdsa_2, sig_1, sig_2, sig_3=None, collateral_info=None, trade_fee=C(0)):
     #Init.
-    ecdsa_encrypted = ECDSACrypt(config["green_address_server"]["encrypted_key_pair"]["pub"])
-    ecdsa_offline = ECDSACrypt(config["green_address_server"]["offline_key_pair"]["pub"])
-    ecdsa_fee = ECDSACrypt(config["fee_key_pair"]["pub"])
+    ecdsa_encrypted = ECDSACrypt(config["green_address_server"]["encrypted_key_pair"]["pub"], config["green_address_server"]["encrypted_key_pair"]["priv"])
+    ecdsa_offline = ECDSACrypt(config["green_address_server"]["offline_key_pair"]["pub"], config["green_address_server"]["offline_key_pair"]["priv"])
+    ecdsa_fee = ECDSACrypt(config["fee_key_pair"]["pub"], config["fee_key_pair"]["priv"])
     tx = CTransaction.deserialize(binascii.unhexlify(tx_hex))
 
     #Check txin is as expected.
@@ -714,6 +714,8 @@ class MicrotransferContract():
         }
 
     def check_refund_works(self, tx_hex, owner_first_sig, owner_second_sig, recipient_sig, actor):
+        global error_log_path
+
         try:
             tx = CTransaction.deserialize(binascii.unhexlify(tx_hex))
             redeem_script = bond_redeem_script(self.ecdsa_us, self.ecdsa_them, self.factory.ecdsa_arbiters[0], actor)
@@ -733,8 +735,10 @@ class MicrotransferContract():
                 "txid": calculate_txid(signed_tx_hex)
             }
         except Exception as e:
+            error = parse_exception(e)
+            log_exception(error_log_path, error)
+            print(error)
             print("Check refund failed.")
-            print(e)
             return None
 
     def sign_refund_tx(self, tx_hex, key_no=1, actor="us"):
