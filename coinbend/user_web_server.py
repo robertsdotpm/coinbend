@@ -242,6 +242,7 @@ def api_hook():
         #Attempt to reconnect RPC sockets for coins.
         global coins
         global config
+        global error_log_path
         for coin in list(coins):
             if not coins[coin]["connected"]:
                 try:
@@ -252,8 +253,8 @@ def api_hook():
                     else:
                         raise Exception("Config for coin is on a network different to config network.")
                 except Exception as e:
-                    print(e)
-                    coins[coin]["rpc"]["sock"] = None
+                    error = parse_exception(e, output=1)
+                    log_exception(error_log_path, error)
                     coins[coin]["connected"] = 0
 
         """

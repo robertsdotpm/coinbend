@@ -31,7 +31,11 @@ if __name__ != "main":
     config = ParseConfig(os.path.join(data_dir, "config.json"))
 
     #Error log path.
-    error_log_path = os.path.join(data_dir, config["error_file"])    
+    error_log_path = os.path.join(data_dir, config["error_file"])
+        
+    #Log all.
+    if args.logall != None:
+        Tee(error_log_path, "a")
 
     #Running on testnet?
     if str(config["testnet"]) == "0":

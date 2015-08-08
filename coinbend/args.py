@@ -109,5 +109,8 @@ if __name__ != "__main__":
     #Option: skip main.
     parser.add_argument('-skipmain', '--skipmain', action="store", dest="skipmain", help="query string", default=None)
 
+    #Option: logall.
+    parser.add_argument('-logall', '--logall', action="store", dest="logall", help="query string", default=None)
+
     #Parse arguments.
     args = args, unknown = parser.parse_known_args()

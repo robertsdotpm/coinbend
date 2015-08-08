@@ -9,6 +9,7 @@ Events:
 import time
 import binascii
 import hashlib
+import re
 
 from bitcoin import SelectParams
 from bitcoin.core import b2x, b2lx, lx, x, COIN, COutPoint, CTxOut, CTxIn, CTransaction, Hash160, Serializable, str_money_value
@@ -24,7 +25,7 @@ from .currency_type import *
 from .lib import *
 
 class TXMonitor():
-    def __init__(self, coins, confirmations=8, heights=None, debug=0):
+    def __init__(self, coins, confirmations=6, heights=None, debug=0):
         self.address_types = ["p2pkh", "p2sh"]
         self.confirmations = confirmations
         self.coins = coins
@@ -53,7 +54,8 @@ class TXMonitor():
         if self.debug:
             self.check_interval = None
         else:
-            self.check_interval = 10 * 1
+            self.check_interval = 30 * 1
+        self.first_run = 1
 
     def get_heights(self):
         heights = {}
@@ -80,12 +82,15 @@ class TXMonitor():
             self.latest_blocks[currency] = block
 
     def check(self):
+        global error_log_path
+
         try:
             elapsed = int(time.time() - self.last_run_time)
             if self.check_interval != None:
                 if elapsed < self.check_interval:
                     return
             self.last_run_time = time.time()
+            print("Checking TX monitor.")
 
             for currency in self.latest_blocks:
                 rpc = self.coins[currency]["rpc"]["sock"]
@@ -94,7 +99,16 @@ class TXMonitor():
 
                 #Skip unconnected RPCs.
                 if rpc == None:
+                    print("Rpc sock is broken.")
                     continue
+
+                #This should never ever happen.
+                if self.latest_blocks[currency] == None and not self.first_run:
+                    print("\a\a\a")
+                    error = "Latest blocks was detected to be none!!!! Attempting to recover."
+                    log_exception(error_log_path, error)
+                    print(error)
+                    self.get_latest_blocks(heights=None)
 
                 #A new block might of arrived.
                 if height > block["height"]:
@@ -104,11 +118,41 @@ class TXMonitor():
                     #Step back until unfrozen.
                     if "nextblockhash" not in block:
                         orphaned = []
-                        while not block["confirmations"]:
-                            orphaned.append(block)
+                        while int(block["confirmations"]) < 1 or "nextblockhash" not in block:
+                            """
+                            If there's an error between now and setting the new latest block subsequent code will reload the latest_blocks when it detects None.
+                            """
+                            self.latest_blocks[currency] = None
+
+                            print("Found orphan block " + str(block["hash"]))
+                            print("\a\a\a\a")
+
+                            #Prevent us from ever getting stuck.
+                            #(Might occur if pruning is enabled.)
+                            height = block["height"]
+                            while "previousblockhash" not in block:
+                                print("Previous block hash not found~~~!!!!")
+                                print("Found orphan block " + str(block["hash"]))
+                                print("\a\a\a\a")
+                                try:
+                                    block_hash = rpc.getblockhash(height)
+                                except:
+                                    height -= 1
+                                    continue
+                                block = rpc.getblock(block_hash)
+                                orphaned.append(block)
+                                height -= 1
+                            
+                            #Go back until we have a valid block.
                             block_hash = block["previousblockhash"]
                             block = rpc.getblock(block_hash)
                             self.latest_blocks[currency] = block
+                            orphaned.append(block)
+
+                            #Check next block hash is valid.
+                            if "nextblockhash" in block:
+                                if re.match("^[a-fA-F0-9]+$", str(block["nextblockhash"])) == None:
+                                    del block["nextblockhash"]
 
                         #Process orphans.
                         for orphan in orphaned:
@@ -123,6 +167,13 @@ class TXMonitor():
                                             watch["event"] = None
                                             self.remove_seen(currency, watch_id)
 
+                                    print("Updated watch due to orphan.")
+                                    print(watch)
+
+                                #Delete old block container if needed.
+                                if not len(seen_block):
+                                    self.blocks[currency].pop(seen_block_hash, None)
+
                             #Clear processed blocks.
                             if self.processed_blocks[currency] == orphan["hash"]:
                                 self.processed_blocks[currency] = None
@@ -131,11 +182,15 @@ class TXMonitor():
                 loop = 1
                 block_checks = 1
                 while loop and block_checks <= self.max_block_checks:
+                    print("")
+                    print("Checking: " + str(currency) + " " + str(block["hash"]))
+
                     #Already processed, skip block.
-                    if self.processed_blocks[currency] == block["hash"]:
+                    if (self.processed_blocks[currency] == block["hash"] and self.processed_blocks[currency] != None) or block["hash"] in self.blocks[currency]:
                         if "nextblockhash" in block:
                             block = rpc.getblock(block["nextblockhash"])
                         else:
+                            print("Skipping: already processed.")
                             loop = 0
                             break
 
@@ -158,6 +213,7 @@ class TXMonitor():
                     for watch_id in list(self.watching[currency]):
                         #Already found TX in chain, increment confirmations.
                         watch = self.watching[currency][watch_id]
+                        print(watch)
                         if watch["event"] != None:
                             watch["confirmations"] += 1
                         else:
@@ -343,6 +399,8 @@ class TXMonitor():
             log_exception(error_log_path, error)
             print(error)
 
+        self.first_run = 0
+
     def in_found_addresses(self, needle, found_addresses):
         for found_address in found_addresses:
             if found_address["type"] == needle["type"] and found_address["value"] == needle["value"]:
@@ -459,6 +517,9 @@ class TXMonitor():
         return ret
 
     def do_callback(self, watch, code, event, tx_hex, needle):
+        print("Doing callback.")
+        print("\a\a\a")
+
         #Context to execute callback.
         def callback(event, tx_hex, needle):
             if callable(code):
@@ -575,6 +636,9 @@ class TXMonitor():
             "expires": expires,
             "address": address
         }
+
+        print("Adding watch ")
+        print(watch)
 
         #Update watch.
         if event == "confirm":
