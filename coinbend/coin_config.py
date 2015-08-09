@@ -183,8 +183,6 @@ class CoinConfig():
             self.set_field("rpcport", rand_port)
 
         updated = 0
-        print(self.conf)
-        print(old_conf)
         if self.conf != old_conf and self.conf != None:
             updated = 1
         return updated

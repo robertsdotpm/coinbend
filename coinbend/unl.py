@@ -40,6 +40,9 @@ class UNL():
         if their_unl == None:
             raise Exception("Unable to deconstruct their UNL.")
 
+        print(our_unl)
+        print(their_unl)
+
         #Active nodes can't connect to each other.
         if our_unl["node_type"] == "active" and \
         their_unl["node_type"] == "active":
