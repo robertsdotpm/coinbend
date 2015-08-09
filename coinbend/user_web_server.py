@@ -333,7 +333,6 @@ def api_currencies(currency=None):
             except Exception as e:
                 print(e)
                 json_out[coin]["connected"] = coins[coin]["connected"] = 0
-                coins[coin]["rpc"]["sock"] = None
         try:
             json_out[coin]["code"] = cryptocurrencies[coin]["code"]
         except:

@@ -41,7 +41,7 @@ def find_microtransfer(needle, trades):
 
 def validate_setup_tx(config, tx_hex, ecdsa_1, ecdsa_2, sig_1, sig_2, sig_3=None, collateral_info=None, trade_fee=C(0)):
     #Init.
-    ecdsa_encrypted = ECDSACrypt(config["green_address_server"]["encrypted_key_pair"]["pub"], config["green_address_server"]["encrypted_key_pair"]["priv"])
+    ecdsa_encrypted = ECDSACrypt(config["green_address_server"]["encrypted_key_pair"]["pub"])
     ecdsa_offline = ECDSACrypt(config["green_address_server"]["offline_key_pair"]["pub"])
     ecdsa_fee = ECDSACrypt(config["fee_key_pair"]["pub"])
     tx = CTransaction.deserialize(binascii.unhexlify(tx_hex))

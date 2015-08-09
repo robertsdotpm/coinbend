@@ -121,7 +121,7 @@ class GreenAddress():
         encrypted_key and offline_key has yet to be created.
         """
         self.ecdsa_encrypted = ecdsa_encrypted
-        self.ecdsa_offline = ECDSACrypt(self.config["green_address_server"]["offline_key_pair"]["pub"], self.config["green_address_server"]["offline_key_pair"]["priv"])
+        self.ecdsa_offline = ECDSACrypt(self.config["green_address_server"]["offline_key_pair"]["pub"])
         self.redeem_script = green_redeem_script(self.ecdsa_1, self.ecdsa_2, self.ecdsa_encrypted, self.ecdsa_offline)
 
         if self.use_rpc:
