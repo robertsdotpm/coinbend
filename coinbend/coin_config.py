@@ -17,7 +17,7 @@ class CoinConfig():
         self.coin = coin
         self.file_path = file_path
         self.testnet = testnet
-        self.conf = []
+        self.conf = None
         self.load()
         self.updated = self.patch()
         if self.updated:
@@ -31,6 +31,7 @@ class CoinConfig():
         content = ""
         try:
             with open(self.file_path, "r") as fp:
+                self.conf = []
                 for line in fp.readlines():
                     #Valid lines only.
                     line = line.strip()
@@ -51,6 +52,11 @@ class CoinConfig():
             return
         
     def set_field(self, name, value, old_value=None):
+        #Config not loaded.
+        if self.conf == None:
+            return
+
+        #Set field.
         name = str(name)
         value = str(value)
         is_set = 0
@@ -72,6 +78,11 @@ class CoinConfig():
             is_set = 1
 
     def get_field(self, name):
+        #Config not loaded.
+        if self.conf == None:
+            return None
+
+        #Find value.
         for lookup in self.conf:
             if name == list(lookup)[0]:
                 return lookup[name]
@@ -81,7 +92,10 @@ class CoinConfig():
 
     #Patch conf file for working with exchange.
     def patch(self):
-        old_conf = self.conf[:]
+        if self.conf != None:
+            old_conf = self.conf[:]
+        else:
+            old_conf = None
 
         """
         Set testnet or mainnet mode on coin client based
@@ -169,13 +183,15 @@ class CoinConfig():
             self.set_field("rpcport", rand_port)
 
         updated = 0
-        if self.conf != old_conf:
+        print(self.conf)
+        print(old_conf)
+        if self.conf != old_conf and self.conf != None:
             updated = 1
         return updated
     
     def save_changes(self):
         if self.updated:
-            print("Updating.")
+            print("Updating " + str(self.coin))
             try:
                 #Convert to conf format.
                 content = ""
@@ -229,6 +245,14 @@ def load_coins(this_os, testnet, coin_names=[]):
         conf_paths.append(conf_path)
         coin_config = CoinConfig(conf_path, coin, testnet)
 
+        #Coin not loaded: skip.
+        if coin_config.conf == None:
+            print("Unable to load " + str(coin_config.coin))
+            print("Maybe there was a permission error writing to the config file? Please check the coin's config file is writable.")
+            print()
+            input("Press enter to continue.")
+            continue
+
         #Try connect RPC.
         connected = 0
         rpc_user = coin_config.get_field("rpcuser")
@@ -255,7 +279,8 @@ def load_coins(this_os, testnet, coin_names=[]):
             "address": "",
             "tx_fee": C("0"),
             "dust_threshold": C("0"),
-            "testnet": 1
+            "testnet": 1,
+            "updated": 0
         }
         ports.append(rpc_port)
 
@@ -286,6 +311,8 @@ def load_coins(this_os, testnet, coin_names=[]):
             coins[coin]["address"] = rpc.getaccountaddress("0")
             coins[coin]["connected"] = 1
             coins[coin]["testnet"] = get_info["testnet"]
+            if coins[coin]["coin_config"].updated:
+                updated = coins[coin]["updated"] = 1
 
             #Calculate and set TX fee.
             tx_fee = C(get_info["paytxfee"])
@@ -320,6 +347,13 @@ def load_coins(this_os, testnet, coin_names=[]):
             print(exc_type, fname, exc_tb.tb_lineno)
             coins[coin]["rpc"]["sock"] = None
             coins[coin]["connected"] = 0
+
+    if updated:
+        print("One or more of your coins have had their config files updated so Coinbend can connect. Please restart your coin clients and then restart the Coinbend client.")
+        print()
+        input("Press enter to exit ...")
+        exit()
+
     return coins
 
 if __name__ == "__main__":

@@ -438,6 +438,23 @@ function validate_trade_form(){
                 return 0;
             }
 
+            //Seller expected fee amount.
+            fee_currency = find_currency(base_currency);
+            min_fee_output = math.bignumber(currencies[fee_currency]["dust_threshold"]) / math.bignumber(trade_fee);
+            expected_fee_output = math.bignumber(trade_fee) * math.bignumber(amount);
+            if(min_fee_output < expected_fee_output || (math.bignumber(amount) != min_fee_output && demo == "1")){
+                currency_code = currencies[fee_currency]["code"];
+                display_currency = format_currency(fee_currency, currency_code);
+                if(demo == "1"){
+                    leading = "Required";
+                } else {
+                    leading = "Minimum";
+                }
+                msg = leading + " amount is " + pretty_float(min_fee_output, 8) + " " + htmlEncode(display_currency);
+                $("#trade_status_input").val(msg);
+                return 0;
+            }
+
             //Check fee outputs satisfies dust threshold.
             //Buyer expected fee amount.
             fee_currency = find_currency(quote_currency);
@@ -452,23 +469,6 @@ function validate_trade_form(){
                     leading = "Minimum";
                 }
                 msg = leading + " total is " + pretty_float(min_fee_output, 8) + " " + htmlEncode(display_currency);
-                $("#trade_status_input").val(msg);
-                return 0;
-            }
-
-            //Seller expected fee amount.
-            fee_currency = find_currency(base_currency);
-            min_fee_output = math.bignumber(currencies[fee_currency]["dust_threshold"]) / math.bignumber(trade_fee);
-            expected_fee_output = math.bignumber(trade_fee) * math.bignumber(amount);
-            if(min_fee_output < expected_fee_output || (math.bignumber(amount) != min_fee_output && demo == "1")){
-                currency_code = currencies[fee_currency]["code"];
-                display_currency = format_currency(fee_currency, currency_code);
-                if(demo == "1"){
-                    leading = "Required";
-                } else {
-                    leading = "Minimum";
-                }
-                msg = leading + " amount is " + pretty_float(min_fee_output, 8) + " " + htmlEncode(display_currency);
                 $("#trade_status_input").val(msg);
                 return 0;
             }
