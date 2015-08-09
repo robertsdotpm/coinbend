@@ -209,9 +209,16 @@ class Sock:
                     if chunk == b"":
                         self.close()
                         return
-                    self.buf += chunk.decode("utf-8")
+
+                    #Avoid decoding errors.
+                    try:
+                        self.buf += chunk.decode("utf-8")
+                    except:
+                        continue
+
                     if self.blocking:
                         break
+
                     chunk_no += 1
 
             repeat = 0

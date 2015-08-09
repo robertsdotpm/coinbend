@@ -62,6 +62,8 @@ class UNL():
             else:
                 master = 0
 
+        print("Master = " + str(master))
+
         #Are they already connected?
         con = self.net.con_by_ip(their_unl["wan_ip"])
         if con != None:
