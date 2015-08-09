@@ -585,6 +585,7 @@ def add_connection(network):
             return '{"error": "Unable to connect to UNL."}'
         else:
             #Used for identifying sockets for direct connect.
+            print("Dest IP = " + str(dest_ip))
             ret = {
                 "dest_ip": dest_ip
             }

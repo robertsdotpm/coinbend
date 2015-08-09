@@ -61,11 +61,11 @@ class TradeEngine():
                 sql = "SELECT * FROM `trade_orders` WHERE `src_ip`=? AND `created_at`>?"
                 tx.execute(sql, (src_ip, previous_day))
                 ret = tx.fetchall()
-                if len(ret):
+                if len(ret) >= 4:
                     found = 1
 
             if found:
-                raise Exception("Demo mode is active so you can only submit one trade per 24 hours.")
+                raise Exception("Demo mode is active so you can only submit four trades per 24 hours.")
 
         #Build trade object.
         trade = Trade(action, amount, pair, ppc, dest_ip=dest_ip, src_ip=src_ip)

@@ -154,6 +154,9 @@ class Net():
 
         #Avoid connecting to ourself.
         if not self.validate_node(node_ip, node_port):
+            print("Validate node for add node failed.")
+            print(node_ip)
+            print(node_port)
             return None
         
         #Simultaneous open.
@@ -207,7 +210,8 @@ class Net():
                 log_exception(self.error_log_path, error)
                 print(error)
                 return None
-            
+        
+        print("No node handlers found for " + str(node_type) + " in add node")
         return None
 
     def bootstrap(self):
