@@ -171,6 +171,9 @@ if __name__ != "main":
             exchange_rates.append(exchange_rate)
         e_exchange_rate.manual_override(exchange_rates)
 
+    #Todo: save this value and remove this.
+    args.clockskew = 1
+
     #Clock skew against NTP.
     if args.clockskew != None:
         sys_clock = SysClock(clock_skew=Decimal(args.clockskew))
