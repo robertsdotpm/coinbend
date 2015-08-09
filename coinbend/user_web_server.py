@@ -253,7 +253,7 @@ def api_hook():
                     else:
                         raise Exception("Config for coin is on a network different to config network.")
                 except Exception as e:
-                    error = parse_exception(e, output=1)
+                    error = parse_exception(e)
                     log_exception(error_log_path, error)
                     coins[coin]["connected"] = 0
 

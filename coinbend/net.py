@@ -89,7 +89,7 @@ class Net():
         self.forwarding_servers = forwarding_servers
         self.last_bootstrap = None
         self.last_listen = None
-        self.rendezvous_interval = 10 #How often to bootstrap.
+        self.rendezvous_interval = 2 * 60 #How often to bootstrap.
         self.interface = interface
         self.min_connected = 3
         self.is_accepting_clients = 0

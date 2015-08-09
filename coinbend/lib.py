@@ -50,7 +50,7 @@ class Tee(object):
     def write(self, data):
         self.file.write(data)
         self.stdout.write(data)
-        self.file.flush()
+        self.stdout.flush()
 
 def is_json(myjson):
     try:
