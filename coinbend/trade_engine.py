@@ -95,11 +95,16 @@ class TradeEngine():
             raise Exception("Sending amount for this trade is less than the dust threshold amount and can't be broadcast.")
 
         if trade.to_recv < coins[trade.to_recv.currency]["dust_threshold"]:
-            raise Exception("Receiving amount for this trade is less than the dust threshold amount and can't be broadcast.")        
+            raise Exception("Receiving amount for this trade is less than the dust threshold amount and can't be broadcast.")
+
+        #Check balance is enough to cover trade.
+        rpc = coins[trade.to_recv.currency]["rpc"]["sock"]
+        balance = C(rpc.getbalance())
+        if trade.to_send > balance:
+            raise Exception("Insufficent balance to cover trade.")
 
         #Generate a receive address.
         if recv_addr == None:
-            rpc = coins[trade.to_recv.currency]["rpc"]["sock"]
             recv_addr = rpc.getnewaddress()
     
         #Set receive address.
