@@ -11,7 +11,7 @@ apt-get install libsdl-dev libsdl-image1.2-dev libsdl-mixer1.2-dev libsdl-ttf2.0
 
 
 sudo apt-get install python-setuptools python-pip python-dev python3-dev libmysqlclient-dev python-pyaudio python-pygame python-nose bzr cython
-sudo pip install scrypt colorama
+sudo pip install colorama
 sudo apt-get install libssl-dev
 
 #spydht: fork from robertsdotpm

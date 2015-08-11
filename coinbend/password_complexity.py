@@ -9,7 +9,6 @@ dictionary attack among other things.
 
 import random
 import re
-import scrypt
 import binascii
 
 #print(x.hash("password", "a", str(config["satoshi_identity"])))
@@ -169,14 +168,9 @@ class PasswordComplexity():
         (Scrypt parameters taken from recommendations made in
         http://www.tarsnap.com/scrypt/scrypt-slides.pdf)
         """
-        
-        logN = 14 #General work factor, iteration count.
-        r = 8 #blocksize in use for underlying hash; fine-tunes the relative memory-cost.
-        p = 1 #parallelization factor; fine-tunes the relative cpu-cost.
-        hash_bytes = 32 #Default. Litecoin also uses this.
-        spices = salt + pepper
-        ret = scrypt.hash(password, spices, 1 << logN, r, p, hash_bytes)
-        return str(binascii.hexlify(ret))[2:-1]
+
+        #Todo: code this function.
+        return ""
         
 
 if __name__ == "__main__":

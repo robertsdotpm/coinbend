@@ -16,7 +16,6 @@ setup(name='coinbend',
     packages=['coinbend'],
     install_requires=[
         'oursql',
-        'scrypt',
         'pyaudio',
         'colorama',
         'bitcoin'
