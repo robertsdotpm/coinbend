@@ -35,6 +35,8 @@ if __name__ != "main":
         
     #Log all.
     if args.logall != None:
+        print("starting tee")
+        print(error_log_path)
         Tee(error_log_path, "a")
 
     #Running on testnet?
@@ -244,6 +246,7 @@ if __name__ != "main":
         print(direct_nat_type)
 
         #Simultaneous should only be enabled for direct network.
+		#Todo: have seperate variables for p2p network.
         if direct_net.node_type == "simultaneous":
             node_type = "active"
 

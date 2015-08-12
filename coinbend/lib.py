@@ -41,7 +41,7 @@ import numpy
 
 class Tee(object):
     def __init__(self, name, mode):
-        self.file = open(name, mode)
+        self.file = open(name, mode, 0) #0 is unbuffered apparently.
         self.stdout = sys.stdout
         sys.stdout = self
     def __del__(self):
