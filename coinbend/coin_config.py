@@ -301,6 +301,10 @@ def load_coins(this_os, testnet, coin_names=[]):
     for coin in list(coins):
         #Attempt to connect RPC instances.
         try:
+            #Was config updated?
+            if coins[coin]["coin_config"].updated:
+                updated = coins[coin]["updated"] = 1
+
             #Causes an exception if not connected.
             rpc = coins[coin]["rpc"]["sock"] = JsonRpc(coins[coin]["rpc"]["endpoint"])
             get_info = rpc.getinfo()
@@ -309,8 +313,6 @@ def load_coins(this_os, testnet, coin_names=[]):
             coins[coin]["address"] = rpc.getaccountaddress("0")
             coins[coin]["connected"] = 1
             coins[coin]["testnet"] = get_info["testnet"]
-            if coins[coin]["coin_config"].updated:
-                updated = coins[coin]["updated"] = 1
 
             #Calculate and set TX fee.
             tx_fee = C(get_info["paytxfee"])
