@@ -22,6 +22,7 @@ import urllib.request
 import hashlib
 import uuid
 import time
+import threading
 from spydht import DHT
 
 if __name__ != "main":
@@ -32,12 +33,15 @@ if __name__ != "main":
 
     #Error log path.
     error_log_path = os.path.join(data_dir, config["error_file"])
+
+    #Threading mutex.
+    thread_lock = threading.Lock()
         
     #Log all.
     if args.logall != None:
         print("starting tee")
         print(error_log_path)
-        Tee(error_log_path, "a")
+        Tee(error_log_path, "a",  thread_lock)
 
     #Running on testnet?
     if str(config["testnet"]) == "0":

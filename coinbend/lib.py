@@ -40,17 +40,27 @@ from decimal import Decimal
 import numpy
 
 class Tee(object):
-    def __init__(self, name, mode):
-        self.file = open(name, mode, 0) #0 is unbuffered apparently.
+    def __init__(self, name, mode, lock):
+        self.lock = lock
+        self.name = name
+        self.mode = mode
         self.stdout = sys.stdout
         sys.stdout = self
     def __del__(self):
         sys.stdout = self.stdout
         self.file.close()
     def write(self, data):
-        self.file.write(data)
-        self.stdout.write(data)
-        self.stdout.flush()
+        self.lock.acquire()
+        try:
+            self.file = open(self.name, self.mode)
+            self.file.write(data)
+            self.stdout.write(data)
+            self.stdout.flush()
+            self.file.close()
+        except:
+            pass
+        finally:
+            self.lock.release()
 
 def is_json(myjson):
     try:

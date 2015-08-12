@@ -288,6 +288,7 @@ class TXMonitor():
                             event = watch["event"]
                             code = watch["callback"][event]
                             needle = watch["needle"]
+                            tx_hex = watch["found_tx_hex"]
                             if code != None:
                                 self.do_callback(watch, code, event, tx_hex, needle)
 
