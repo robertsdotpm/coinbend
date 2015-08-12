@@ -624,7 +624,7 @@ class MicrotransferContract():
         #Locktime is unsigned int 4, unix timestamp in little endian format.
         #(Conversion to little endian is handled by the library already.)
         self.nlock_time = datetime.datetime.fromtimestamp(self.ntp) + datetime.timedelta(seconds=self.contract_duration)
-        self.nlock_time = int(self.nlock_time.strftime("%s"))
+        self.nlock_time = int(time.mktime(self.nlock_time.timetuple()))
 
         #Generate change address.
         self.change_address = self.send_coin_rpc.getnewaddress()
