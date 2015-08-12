@@ -48,7 +48,7 @@ class ProofOfWork():
             ttl = 300
         target = (2 ** 64) / (self.nonce_trials_per_byte * (len(msg) + self.payload_length_extra_bytes + ((ttl * (len(msg) + self.payload_length_extra_bytes)) / (2 ** 16))))
         initial_hash = hashlib.sha512(msg).digest()
-        return self.do_fast(target, initial_hash)
+        return self.do_safe(target, initial_hash)
 
     def is_valid(self, msg, nonce, ttl=5*60, nonce_trials_per_byte=0, payload_length_extra_bytes=0):
         if type(msg) == str:
@@ -82,6 +82,7 @@ class ProofOfWork():
         return nonce
 
     def do_fast(self, target, initial_hash):
+        #Todo: this code doesn't work on Windows -- what is the problem?
         import time
         from multiprocessing import Pool, cpu_count
         try:

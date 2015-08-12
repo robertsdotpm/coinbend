@@ -291,7 +291,7 @@ if args.skipmain == None:
         #Process direct messages from other nodes.
         for con in direct_net:
             for msg in con:
-                print("msg = ")
+                print("direct msg = ")
                 print(msg)
                 replies = direct_protocol.understand(msg, seen_messages, con)
                 for reply in replies:
@@ -309,7 +309,7 @@ if args.skipmain == None:
                 if demo:
                     continue
 
-                print("msg = ")
+                print("p2p msg = ")
                 print(msg)
                 replies = p2p_protocol.understand(msg, seen_messages, con)
                 for reply in replies:

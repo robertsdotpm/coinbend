@@ -334,6 +334,8 @@ class HybridProtocol():
 
                 #Return replies.
                 return replies
+        else:
+            print("Match format was wrong!")
 
         return []
 

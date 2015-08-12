@@ -35,10 +35,11 @@ if __name__ != "main":
     error_log_path = os.path.join(data_dir, config["error_file"])
 
     #Threading mutex.
-    thread_lock = threading.Lock()
+    thread_lock = None
         
     #Log all.
     if args.logall != None:
+        thread_lock = threading.Lock()
         print("starting tee")
         print(error_log_path)
         Tee(error_log_path, "a",  thread_lock)
@@ -190,6 +191,9 @@ if __name__ != "main":
     demo = int(config["demo"])
     if args.demo != None:
         demo = int(args.demo)
+
+    print("Demo mode = ")
+    print(demo)
 
     #Get external IP.
     if args.wanip != None:
