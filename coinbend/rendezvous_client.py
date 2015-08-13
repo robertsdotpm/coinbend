@@ -40,7 +40,6 @@ import datetime
 import random
 from multiprocessing.dummy import Pool
 
-from .globals import *
 from .sock import *
 from .net import *
 from .lib import *

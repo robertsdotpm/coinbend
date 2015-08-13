@@ -47,7 +47,8 @@ import json
 import time
 from threading import Thread, Lock
 import copy
-from .globals import *
+from .cryptocurrencies import *
+from .fiatcurrencies import *
 from .currency_type import *
 from .lib import *
 import urllib.parse
@@ -1241,6 +1242,7 @@ python3.3 -m "coinbend.exchange_rate" -externalexchange 0 -erateinit BTC_USD_358
 
     #print(e_exchange_rate.calculate_rate("BTC", "NVC"))
 
+    """
     print(e_exchange_rate.coinbase("BTC", "USD"))
     exit()
     print(e_exchange_rate.btc_value)
@@ -1258,6 +1260,7 @@ python3.3 -m "coinbend.exchange_rate" -externalexchange 0 -erateinit BTC_USD_358
     print(e_exchange_rate.calculate_rate("LTC", "SOMECRAP"))
     print(e_exchange_rate.calculate_rate("SOMECRAP", "LTC"))
     print(e_exchange_rate.calculate_rate("SOMECRAP", "CRAP2"))
+    """
 
     """
     time.sleep(20)

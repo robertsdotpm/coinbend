@@ -29,7 +29,7 @@ import copy
 from threading import Thread, Lock
 
 
-if args.skipmain == None:
+def main():
     #Check we're not running as root.
     whoami = os.path.split(map_path("~"))[-1].lower()
     invalid_whoami = ["root", "admin", "administrator"]

@@ -14,7 +14,6 @@ from threading import Thread
 import hashlib
 
 
-from .globals import *
 from .upnp import *
 from .nat_pmp import NatPMP
 from .lib import *
