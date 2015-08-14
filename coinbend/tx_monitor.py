@@ -17,15 +17,14 @@ from bitcoin.core.script import CScript, OP_DUP, OP_NUMEQUAL, OP_DROP, OP_HASH16
 from bitcoin.core.scripteval import VerifyScript, SCRIPT_VERIFY_P2SH
 from bitcoin.wallet import CBitcoinAddress, CBitcoinSecret, CKey
 from .bitcoinrpc.authproxy import JSONRPCException
-
-from .globals import *
 from .coinlib import *
 from .database import *
 from .currency_type import *
 from .lib import *
 
 class TXMonitor():
-    def __init__(self, coins, confirmations=6, heights=None, debug=0):
+    def __init__(self, coins, confirmations=6, heights=None, debug=0, error_log_path="error.log"):
+        self.error_log_path = error_log_path
         self.address_types = ["p2pkh", "p2sh"]
         self.confirmations = confirmations
         self.coins = coins
@@ -82,8 +81,6 @@ class TXMonitor():
             self.latest_blocks[currency] = block
 
     def check(self):
-        global error_log_path
-
         try:
             elapsed = int(time.time() - self.last_run_time)
             if self.check_interval != None:
@@ -106,7 +103,7 @@ class TXMonitor():
                 if self.latest_blocks[currency] == None and not self.first_run:
                     print("\a\a\a")
                     error = "Latest blocks was detected to be none!!!! Attempting to recover."
-                    log_exception(error_log_path, error)
+                    log_exception(self.error_log_path, error)
                     print(error)
                     self.get_latest_blocks(heights=None)
 
@@ -397,7 +394,7 @@ class TXMonitor():
                                 break
         except Exception as e:
             error = parse_exception(e)
-            log_exception(error_log_path, error)
+            log_exception(self.error_log_path, error)
             print(error)
 
         self.first_run = 0

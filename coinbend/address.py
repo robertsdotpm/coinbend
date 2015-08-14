@@ -2,7 +2,6 @@
 This module is used to build custom send addresses between different altcoins which simplifies a lot of funding logic. The main problem it solves is determining address version between altcoins, networks, and p2sh types.
 """
 
-from .globals import *
 from .lib import *
 from .ecdsa_crypt import *
 

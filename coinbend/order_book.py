@@ -1,4 +1,3 @@
-from .globals import *
 from .database import *
 from .ecdsa_crypt import *
 from .trade_type import *

@@ -9,7 +9,7 @@ this.
 """
 
 import sys
-from .globals import *
+from .parse_config import *
 from .lib import *
 import time
 import oursql
@@ -27,6 +27,9 @@ class Database():
             "SET SESSION TRANSACTION ISOLATION LEVEL SERIALIZABLE;",
             "START TRANSACTION;"
         ]
+
+        #Load config.
+        self.config = ParseConfig(os.path.join(data_dir, "config.json"))
         
         #Connect.
         self.connected = 0
@@ -43,9 +46,9 @@ class Database():
         #Block until connected.
         while not self.connected:
             #Flat file.
-            if config["flat_file"]:
+            if self.config["flat_file"]:
                 try:
-                    flat_file_path = os.path.join(data_dir, config["flat_file"])
+                    flat_file_path = os.path.join(data_dir, self.config["flat_file"])
                     self.con = sqlite3.connect(
                     database=flat_file_path,
                     timeout=self.timeout,
@@ -60,7 +63,7 @@ class Database():
                     print("Sqlite3 unable to connect.")
                     self.kill_connection()
             else: #MySQL
-                for db_server in config["db_servers"]:
+                for db_server in self.config["db_servers"]:
                     try:
                         #raise_on_warnings for debug
                         self.con = oursql.connect(
@@ -121,7 +124,7 @@ class Database():
             #Can also occur if SQL syntax is wrong.
             #Or incorrect parameterization.
 
-            if int(config["debug"]):
+            if int(self.config["debug"]):
                 print(e)
             self.kill_connection()
             if self.connect(blocking):
@@ -150,7 +153,7 @@ class Database():
         if self.in_transaction:
             raise Exception("Already in a transaction.")
         try:
-            if config["flat_file"]:
+            if self.config["flat_file"]:
                 self.cur = self.con.cursor()
                 self.cur.execute("BEGIN TRANSACTION;")
                 self.in_transaction = 1
@@ -217,7 +220,7 @@ class Database():
 
     def fetchall(self):
         #Convert sqlite3.Row to standard dict.
-        if config["flat_file"]:
+        if self.config["flat_file"]:
             return [dict(row) for row in self.cur]
         return self.cur.fetchall()
         
@@ -307,7 +310,7 @@ class Transaction():
         
     def fetchall(self):
         #Convert sqlite3.Row to standard dict.
-        if config["flat_file"]:
+        if self.db.config["flat_file"]:
             return [dict(row) for row in self.db.cur]
         return self.db.cur.fetchall()
 
@@ -319,14 +322,12 @@ class Transaction():
         return self
         
     def __exit__(self, type, value, traceback):
-        global error_log_path
-
         if isinstance(value, Exception):
             print(value)
             exc_type, exc_obj, exc_tb = sys.exc_info()
             fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
             error = "%s %s %s" % (str(exc_type), str(fname), str(exc_tb.tb_lineno))
-            log_exception(error_log_path, error)
+            print(error)
             self.db.destroy_transaction()
         else:
             if not self.db.finish_transaction():

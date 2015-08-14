@@ -1,4 +1,3 @@
-from .globals import *
 from .database import *
 from .trade_type import *
 import datetime

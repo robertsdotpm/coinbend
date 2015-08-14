@@ -1,4 +1,4 @@
-from .globals import *
+
 from .lib import *
 import hashlib
 import bitcoin.base58

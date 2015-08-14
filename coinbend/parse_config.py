@@ -131,6 +131,9 @@ class ParseConfig:
     def __getitem__(self, key):
         return self.config[key]
 
+    def __call__(self, path):
+        return self
+
 if __name__ == "__main__":
     print(ParseConfig("/home/laurence/.Coinbend/config.json")["testnet"])
     import sys

@@ -27,7 +27,7 @@ import time
 import threading
 
 #Parse config file.
-config = ParseConfig(os.path.join(data_dir, "config.json"))
+ParseConfig = config = ParseConfig(os.path.join(data_dir, "config.json"))
 
 #Error log path.
 error_log_path = os.path.join(data_dir, config["error_file"])
@@ -288,7 +288,7 @@ if args.skipnet == None:
 if demo:
     print("Demo mode is enabled.")
 
-tx_monitor = TXMonitor(coins, config["confirmations"])
+tx_monitor = TXMonitor(coins, config["confirmations"], error_log_path=error_log_path)
 trade_engine = TradeEngine()
 
 

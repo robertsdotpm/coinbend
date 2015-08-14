@@ -2,7 +2,6 @@
 Provides an ECDSA wrapper for generating, outputting, parsing, formatting and signing with Bitcoin style ECDSA keys. Compression and decompression of keys is also built in with all keys being internally converted to a decompressed format and outputted as compressed (unless overwritten) which makes working with ECDSA keys extremely easy.
 """
 
-from .globals import *
 from .database import *
 from .lib import *
 from .private_key import *
