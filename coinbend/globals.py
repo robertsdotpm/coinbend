@@ -14,6 +14,8 @@ from .exchange_rate import *
 from .net import *
 from .rendezvous_client import *
 from .sys_clock import *
+from .trade_engine import *
+from .tx_monitor import TXMonitor
 import os
 import netifaces
 import re

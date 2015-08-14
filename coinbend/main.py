@@ -10,8 +10,6 @@ python3.3 -m "coinbend.main" -externalexchange 0 -erateinit BTC_USD_358.03,USD_A
 """
 
 from .globals import *
-from .trade_engine import *
-from .tx_monitor import TXMonitor
 from .user_web_server import *
 from .lib import *
 from .trades import *
