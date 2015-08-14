@@ -111,7 +111,7 @@ class TradeEngine():
         trade.recv_addr = recv_addr
 
         #Generate deposit tx_hex.
-        deposit_tx_hex = trade.setup_green_address(deposit_txid, ecdsa_encrypted, ecdsa_owner)
+        deposit_tx_hex = trade.setup_green_address(self.config, self.coins, deposit_txid, ecdsa_encrypted, ecdsa_owner)
         if deposit_txid == None:
             trade.green_address.save()
         trade.save()

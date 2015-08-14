@@ -1,4 +1,4 @@
-from .globals import *
+
 from .currency_type import *
 from .database import *
 from .ecdsa_crypt import *
@@ -215,10 +215,7 @@ class Trade():
         return self.id
 
     #Setup green address + contract factory for trade.
-    def setup_green_address(self, deposit_txid=None, ecdsa_encrypted=None, ecdsa_owner=None):
-        global config
-        global coins
-
+    def setup_green_address(self, config, coins, deposit_txid=None, ecdsa_encrypted=None, ecdsa_owner=None):
         if ecdsa_encrypted == None:
             ecdsa_encrypted = ECDSACrypt(config["green_address_server"]["encrypted_key_pair"]["pub"])
         else:

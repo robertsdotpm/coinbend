@@ -22,6 +22,72 @@ from .database import *
 from .currency_type import *
 from .lib import *
 
+def parse_address(self, tx, currency):
+    #Supported address types.
+    addresses = {
+        "p2sh": [OP_HASH160, None, OP_EQUAL],
+        "p2pkh": [OP_DUP, OP_HASH160, None, OP_EQUALVERIFY, OP_CHECKSIG]
+    }
+
+    #Check first output only for expected address.
+    insert_main = 1
+    found_addresses = []
+    for address_type in ["p2sh", "p2pkh"]:
+        expected_pub_key = addresses[address_type]
+        for vout_index in range(0, len(tx.vout)):
+            output = tx.vout[vout_index]
+            found_pub_key = list(output.scriptPubKey)
+            match_no = 0
+            hash_index = 0
+
+            #Count expected parts for this output.
+            for i in range(0, len(found_pub_key)):
+                if i > len(expected_pub_key) - 1:
+                    match_no = 0
+                    break
+
+                if expected_pub_key[i] == None:
+                    hash_index = i
+                    match_no += 1
+                    continue
+
+                if expected_pub_key[i] == found_pub_key[i]:
+                    match_no += 1
+
+            #All parts found -- addr found.
+            if match_no == len(expected_pub_key):
+                addr_hash = found_pub_key[hash_index]
+                if self != None:
+                    addr = self.addresses[currency].construct_address(addr_hash, hashed=1)
+                else:
+                    addr = "unknown"
+                ret = {
+                    "type": address_type,
+                    "value": addr,
+                    "vout": vout_index,
+                    "script_pub_key": found_pub_key
+                }
+
+                """
+                The address for the first output is the most important to decide what the address is if there's multiple outputs for the same transaction that have an address type / valid address.
+                """
+                if insert_main:
+                    found_addresses.insert(0, ret)
+                    insert_main = 0
+                else:
+                    found_addresses.append(ret)
+
+    #Nothing found -- unknown.
+    if not len(found_addresses):
+        ret = [{
+            "type": "unknown",
+            "value": ""
+        }]
+
+        return ret
+    else:
+        return found_addresses
+
 class TXMonitor():
     def __init__(self, coins, confirmations=6, heights=None, debug=0, error_log_path="error.log"):
         self.error_log_path = error_log_path
@@ -407,67 +473,7 @@ class TXMonitor():
         return 0
 
     def parse_address(self, tx, currency):
-        #Supported address types.
-        addresses = {
-            "p2sh": [OP_HASH160, None, OP_EQUAL],
-            "p2pkh": [OP_DUP, OP_HASH160, None, OP_EQUALVERIFY, OP_CHECKSIG]
-        }
-
-        #Check first output only for expected address.
-        insert_main = 1
-        found_addresses = []
-        for address_type in ["p2sh", "p2pkh"]:
-            expected_pub_key = addresses[address_type]
-            for vout_index in range(0, len(tx.vout)):
-                output = tx.vout[vout_index]
-                found_pub_key = list(output.scriptPubKey)
-                match_no = 0
-                hash_index = 0
-
-                #Count expected parts for this output.
-                for i in range(0, len(found_pub_key)):
-                    if i > len(expected_pub_key) - 1:
-                        match_no = 0
-                        break
-
-                    if expected_pub_key[i] == None:
-                        hash_index = i
-                        match_no += 1
-                        continue
-
-                    if expected_pub_key[i] == found_pub_key[i]:
-                        match_no += 1
-
-                #All parts found -- addr found.
-                if match_no == len(expected_pub_key):
-                    addr_hash = found_pub_key[hash_index]
-                    addr = self.addresses[currency].construct_address(addr_hash, hashed=1)
-                    ret = {
-                        "type": address_type,
-                        "value": addr,
-                        "vout": vout_index,
-                        "script_pub_key": found_pub_key
-                    }
-
-                    """
-                    The address for the first output is the most important to decide what the address is if there's multiple outputs for the same transaction that have an address type / valid address.
-                    """
-                    if insert_main:
-                        found_addresses.insert(0, ret)
-                        insert_main = 0
-                    else:
-                        found_addresses.append(ret)
-
-        #Nothing found -- unknown.
-        if not len(found_addresses):
-            ret = [{
-                "type": "unknown",
-                "value": ""
-            }]
-
-            return ret
-        else:
-            return found_addresses
+        return parse_address(self, tx, currency)
 
     def remove_inputs(self, currency, tx):
         #Remove inputs.

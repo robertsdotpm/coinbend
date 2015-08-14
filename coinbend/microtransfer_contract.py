@@ -14,7 +14,6 @@ from bitcoin.core.scripteval import VerifyScript, SCRIPT_VERIFY_P2SH
 from bitcoin.wallet import CBitcoinAddress, CBitcoinSecret, CKey
 from decimal import Decimal
 
-from .globals import *
 from .currency_type import *
 from .json_rpc import *
 from .coinlib import *
@@ -25,6 +24,7 @@ from .private_key import *
 from .green_address import *
 from .address import *
 from .database import *
+from .tx_monitor import parse_address
 
 def find_microtransfer(needle, trades):
     #Needle = a contract_hash to find.
@@ -427,12 +427,11 @@ class MicrotransferFactory():
         unspent_inputs = self.green_address.inputs
 
         #Check unclaimed outputs go to the right green address.
-        global tx_monitor
         deposit_tx = self.green_address.deposit_tx_hex
         print(deposit_tx)
         deposit_tx = CTransaction.deserialize(binascii.unhexlify(deposit_tx))
         print(deposit_tx)
-        ret = tx_monitor.parse_address(deposit_tx, currency)
+        ret = parse_address(None, deposit_tx, currency)
         print(ret)
         ret = ret[0]
         print(ret)
