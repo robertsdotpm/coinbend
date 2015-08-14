@@ -14,7 +14,12 @@ from colorama import Fore, Back, Style
 import copy
 
 class TradeEngine():
-    def __init__(self, trades=None, order_book=None, db=None):
+    def __init__(self, config, coins, tx_monitor, demo=0, trades=None, order_book=None, db=None):
+        self.config = config
+        self.coins = coins
+        self.tx_monitor = tx_monitor
+        self.demo = demo
+
         #Connect engine to database.
         if db != None:
             self.db = db
@@ -48,13 +53,8 @@ class TradeEngine():
         return None
 
     def open_trade(self, action, amount, pair, ppc, recv_addr=None, deposit_txid=None, ecdsa_encrypted=None, ecdsa_owner=None, dest_ip="", src_ip=""):
-        global config
-        global coins
-        global tx_monitor
-        global demo
-
         #Check same IP hasn't already submitted a trade.
-        if demo:
+        if self.demo:
             previous_day = int(time.time() - (24 * 60 * 60))
             found = 0
             with Transaction() as tx:
@@ -69,7 +69,7 @@ class TradeEngine():
 
         #Build trade object.
         trade = Trade(action, amount, pair, ppc, dest_ip=dest_ip, src_ip=src_ip)
-        trade_fee = C(config["trade_fee"])
+        trade_fee = C(self.config["trade_fee"])
         our_trade_fee = trade.apply_trade_fee(trade_fee, optional=1)
         their_trade_fee = trade.apply_trade_fee(trade_fee, optional=1, toggle=1)
         trade.apply_trade_fee(trade_fee)
@@ -79,26 +79,26 @@ class TradeEngine():
 
         The code bellow ensures the trade size vs trade fee will result in all outputs larger than the dust threshold.
         """
-        if our_trade_fee < coins[trade.to_send.currency]["dust_threshold"]:
+        if our_trade_fee < self.coins[trade.to_send.currency]["dust_threshold"]:
             raise Exception("The resulting trade fee for our trade is less than the dust threshold and can't be broadcast.")
 
-        if our_trade_fee != coins[trade.to_send.currency]["dust_threshold"] and demo:
+        if our_trade_fee != self.coins[trade.to_send.currency]["dust_threshold"] and self.demo:
             raise Exception("Demo mode is active so the required send amount is limited to prevent abuse.")
 
-        if their_trade_fee < coins[trade.to_recv.currency]["dust_threshold"]:
+        if their_trade_fee < self.coins[trade.to_recv.currency]["dust_threshold"]:
             raise Exception("The resulting trade fee for their side of the trade is less than the dust threshold and can't be broadcast.")
 
-        if their_trade_fee != coins[trade.to_recv.currency]["dust_threshold"] and demo:
+        if their_trade_fee != self.coins[trade.to_recv.currency]["dust_threshold"] and self.demo:
             raise Exception("Demo mode is active so the required receive amount is limited to prevent abuse.")
 
-        if trade.to_send < coins[trade.to_send.currency]["dust_threshold"]:
+        if trade.to_send < self.coins[trade.to_send.currency]["dust_threshold"]:
             raise Exception("Sending amount for this trade is less than the dust threshold amount and can't be broadcast.")
 
-        if trade.to_recv < coins[trade.to_recv.currency]["dust_threshold"]:
+        if trade.to_recv < self.coins[trade.to_recv.currency]["dust_threshold"]:
             raise Exception("Receiving amount for this trade is less than the dust threshold amount and can't be broadcast.")
 
         #Check balance is enough to cover trade.
-        rpc = coins[trade.to_recv.currency]["rpc"]["sock"]
+        rpc = self.coins[trade.to_recv.currency]["rpc"]["sock"]
         balance = C(rpc.getbalance())
         if trade.to_send > balance:
             raise Exception("Insufficent balance to cover trade.")
@@ -153,7 +153,7 @@ class TradeEngine():
 
         unique_id = get_unique_id()
         watch_id = "green_address_deposit_" + unique_id
-        tx_monitor.add_watch(trade.to_send.currency, needle, callbacks, "Green address deposit TX.", watch_id)
+        self.tx_monitor.add_watch(trade.to_send.currency, needle, callbacks, "Green address deposit TX.", watch_id)
 
         return trade
         
@@ -174,7 +174,7 @@ class TradeEngine():
             
             #Apply trade fees.
             if trade["received"] > "0.1":
-                trade["trade_fee"] = trade["received"] * str(config["trade_fee"])
+                trade["trade_fee"] = trade["received"] * str(self.config["trade_fee"])
                 trade["received"] = trade["received"] - trade["trade_fee"]
             
             #Apply refund if needed.

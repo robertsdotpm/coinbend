@@ -289,8 +289,6 @@ if demo:
     print("Demo mode is enabled.")
 
 tx_monitor = TXMonitor(coins, config["confirmations"], error_log_path=error_log_path)
-trade_engine = TradeEngine()
-
-
+trade_engine = TradeEngine(config, coins, tx_monitor, demo)
     
 
