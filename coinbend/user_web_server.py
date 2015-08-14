@@ -4,8 +4,8 @@ and other services. Server is spawned on port 7777 by
 default.
 """
 
-from .bottle import *
 from .globals import *
+from .bottle import *
 from .coin_config import *
 from .password_complexity import *
 from .database import *
@@ -39,8 +39,7 @@ Note: Also add this for GET requests that return senstive
 info.
 """
 csrf_token = PasswordComplexity(["uppercase", "lowercase", "numeric"], 60).generate_password()
-if config["debug"]:
-    print(csrf_token)
+print(csrf_token)
 
 class CherryPyServer(ServerAdapter):
     global error_log_path
@@ -238,6 +237,9 @@ def default_page():
 
 @hook('before_request')
 def api_hook():
+    print("In api hook.")
+    print(request.path)
+    print(request.query_string)
     if re.match("/api([^?&=]+)?", request.path) != None:
         #Attempt to reconnect RPC sockets for coins.
         global coins
@@ -269,8 +271,10 @@ def api_hook():
         data += request.query_string
         try:
             data += "access=" + request.POST["access"]
-        except:
-            pass
+            print(request.POST["access"])
+        except Exception as e:
+            error = parse_exception(e)
+            log_exception(error_log_path, error)
         access_token = re.findall("access[=]([a-zA-Z0-9-_]+)", data)
         if len(access_token):
             access_token = access_token[0]
@@ -491,12 +495,13 @@ def get_exchange_rate(location, base_currency, quote_currency):
 
 @get('/api/node_id/<network>')
 def generate_unl_pointer(network):
+    print("In generate unl_pointer")
     global dht
     global direct_net
     global p2p_net
     global error_log_path
-
     try:
+
         #Check network.
         networks = ["direct", "p2p"]
         if network not in networks:
@@ -509,21 +514,8 @@ def generate_unl_pointer(network):
             unl = UNL(p2p_net)
 
         #Generate DHT data.
-        plaintext = unl.construct()
-        crypt = otp_encrypt(plaintext)
-        content = crypt["ciphertext"]
-        content = binascii.hexlify(content).decode("utf-8")
-        id = "UNL" + str(uuid.uuid4())
-        key = hashlib.sha256(id.encode("ascii") + content.encode("ascii")).hexdigest()
-
-        #Store encrypted UNL in DHT.
-        dht[id] = content
-
-        #Generate pointer to UNL in DHT.
-        pointer = key
-        pointer += binascii.hexlify(crypt["otp"]).decode("utf-8")
         ret = {
-            "unl_pointer": pointer
+            "unl_pointer": unl.construct()
         }
 
         #Return results as JSON.
@@ -561,17 +553,8 @@ def add_connection(network):
         #Our UNL.
         src_unl = unl.construct()
 
-        #Decode their UNL from the DHT.
-        dest_unl_pointer = request.forms.get('unl_pointer')
-        dest_unl_key = dest_unl_pointer[0:64]
-        dest_unl_ciphertext = dht[dest_unl_key]
-        dest_unl_ciphertext = dest_unl_ciphertext.encode("ascii")
-        dest_unl_ciphertext = binascii.unhexlify(dest_unl_ciphertext)
-        dest_unl_otp = dest_unl_pointer[64:]
-        dest_unl_otp = dest_unl_otp.encode("ascii")
-        dest_unl_otp = binascii.unhexlify(dest_unl_otp)
-        dest_unl = otp_decrypt(dest_unl_otp, dest_unl_ciphertext)
-        dest_unl = dest_unl.decode("utf-8")
+        #Decode their UNL.
+        dest_unl = request.forms.get('unl_pointer')
 
         #Demo mode: restrict to demo nodes.
         if demo:

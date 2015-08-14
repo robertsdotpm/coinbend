@@ -10,6 +10,8 @@ python3.3 -m "coinbend.main" -externalexchange 0 -erateinit BTC_USD_358.03,USD_A
 """
 
 from .globals import *
+from .trade_engine import *
+from .tx_monitor import TXMonitor
 from .user_web_server import *
 from .lib import *
 from .trades import *
@@ -26,10 +28,25 @@ import os
 import platform
 import hashlib
 import copy
+import sys
 from threading import Thread, Lock
 
 
 def main():
+    global trade_engine
+    global tx_monitor
+    global coins
+    global config
+
+    print(__name__)
+    print(os.getcwd())
+    print(sys.path)
+    print(sys.modules.keys())
+
+    #Set global variables.
+    tx_monitor = TXMonitor(coins, config["confirmations"])
+    trade_engine = TradeEngine()
+
     #Check we're not running as root.
     whoami = os.path.split(map_path("~"))[-1].lower()
     invalid_whoami = ["root", "admin", "administrator"]
@@ -38,8 +55,6 @@ def main():
         exit()
 
     #Protocol handlers.
-    global trade_engine
-    global coins
     global demo
     nacl_crypt = NaclCrypt()
     p2p_protocol = HybridProtocol(config, sys_clock, nacl_crypt, p2p_net, coins, e_exchange_rate, trade_engine)
@@ -421,6 +436,7 @@ def main():
         time.sleep(0.01)
 
 
-
+if __name__ == "__main__":
+    main()
 
 

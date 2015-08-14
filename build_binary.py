@@ -15,10 +15,8 @@ if sys.platform == "win32":
     base = "Console"
     target_name = "coinbend.exe"
 
-
-
 # Dependencies are automatically detected, but it might need fine tuning.
-build_exe_options = {"packages": ["coinbend", "zope.interface"], "includes": ["os", "oursql", "colorama", "bitcoin", "spydht", "zope.interface", "pkg_resources", "netifaces", "cherrypy", "cherrypy.wsgiserver", "cherrypy.wsgiserver.wsgiserver3"], "excludes": ["tkinter"], 'namespace_packages': ['zope'], 'copy_dependent_files': True, 'include_msvcr': True}
+build_exe_options = {"packages": ["coinbend", "zope.interface"], "includes": ["os", "oursql", "colorama", "bitcoin", "zope.interface", "pkg_resources", "netifaces", "cherrypy", "cherrypy.wsgiserver", "cherrypy.wsgiserver.wsgiserver3"], "excludes": ["tkinter"], 'namespace_packages': ['zope'], 'copy_dependent_files': True, 'include_msvcr': True}
 
 
 setup(name='coinbend',

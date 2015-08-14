@@ -41,7 +41,6 @@ import random
 from multiprocessing.dummy import Pool
 
 from .sock import *
-from .net import *
 from .lib import *
 
 class RendezvousClient:
@@ -508,7 +507,6 @@ http://www.researchgate.net/publication/239801764_Implementing_NAT_Traversal_on_
             raise Exception("Port collision number is too high compared to nat tests. Collisions must be in ratio 1 : 5 to avoid ambiguity in test results.")
 
         #Load mappings for preserving and delta tests.
-        net = Net()
         mappings = sequential_bind(self.nat_tests, self.interface)
         for i in range(0, self.nat_tests):
             try:
