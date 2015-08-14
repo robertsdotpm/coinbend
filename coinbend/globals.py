@@ -286,6 +286,9 @@ if args.skipnet == None:
 if demo:
     print("Demo mode is enabled.")
 
+tx_monitor = TXMonitor(coins, config["confirmations"])
+trade_engine = TradeEngine()
+
 
     
 

@@ -43,10 +43,6 @@ def main():
     print(sys.path)
     print(sys.modules.keys())
 
-    #Set global variables.
-    tx_monitor = TXMonitor(coins, config["confirmations"])
-    trade_engine = TradeEngine()
-
     #Check we're not running as root.
     whoami = os.path.split(map_path("~"))[-1].lower()
     invalid_whoami = ["root", "admin", "administrator"]
