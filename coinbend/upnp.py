@@ -34,52 +34,98 @@ class UPnP():
         self.multicast = "239.255.255.250"
 
         #Number of seconds to wait for replies.
-        self.reply_wait = 3
+        self.reply_wait = 15
 
         #Socket timeout.
-        self.timeout = 2
+        self.timeout = 3
 
         #Networking interface.
         self.interface = interface
 
-    #Uses broadcasting to find default UPnP compatible gateway.
-    def find_gateway(self):
-        replies = []
-        try:
+    def create_multicast(self, address, port, reuse=0):
             #Create socket for UDP broadcasts.
             s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-            s.bind(('', self.upnp_port)) #All addresses.
+            #REUSE causes problems with windows: i.e. dropped packets
+            #When sockets aren't gracefully closed from app crashes
+            if reuse:
+                s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+            s.setsockopt(socket.IPPROTO_IP, socket.IP_MULTICAST_TTL, 32)
+            s.bind((get_lan_ip(), port))
+            s.setsockopt(socket.IPPROTO_IP, socket.IP_MULTICAST_LOOP, 0)
+
+            #Join multicast group.
+            iface = socket.inet_aton(get_lan_ip()) # listen for multicast packets on this interface.
+            s.setsockopt(socket.IPPROTO_IP, socket.IP_MULTICAST_IF, iface)
+            group = socket.inet_aton(address)
+            s.setsockopt(socket.IPPROTO_IP, socket.IP_ADD_MEMBERSHIP, group+iface)
             s.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
-            s.setblocking(0)
+            s.settimeout(int(self.timeout))
+
+            return s
+
+    def send_search(self, msg):
+        s = self.create_multicast(self.multicast, 0)
+        s.sendto(bytes(msg, 'UTF-8'), (self.multicast, self.upnp_port))
+        s.shutdown(socket.SHUT_RDWR)
+        s.close()
+        
+
+    #Uses broadcasting to find default UPnP compatible gateway.
+    def find_gateway(self):
+        print("Trying to find UPnP compat gateway.")
+        replies = []
+        s = None
+        #Create socket for UDP broadcasts.
+        try:
+            s = self.create_multicast(self.multicast, self.upnp_port)
+        except Exception as e:
+            print(e)
+            """
+            s = self.create_multicast(self.multicast, self.upnp_port, reuse=1)
+            s.shutdown(socket.SHUT_RDWR)
+            s.close()
+            exit()
+            """
+
+        try:
 
             #Broadcast search message to multicast address.
             search_msg =  "M-SEARCH * HTTP/1.1\r\n"
             search_msg += "HOST: %s:%s\r\n" % (str(self.multicast), str(self.upnp_port))
             search_msg += "ST: ssdp:all\r\n"
-            search_msg += """MAN: "ssdp:discover"\r\n"""
-            search_msg += "MX: 1\r\n"
+            search_msg += "MX: 3\r\n"
             search_msg += "\r\n"
-            s.sendto(bytes(search_msg, 'UTF-8'), (self.multicast, self.upnp_port))
+
 
             #Receive replies for n seconds..
             old_time = time.time()
-            while (int(time.time()) - int(old_time)) < self.reply_wait:
-                res = select.select([s], [], [], self.timeout)
-                if len(res[0]):
-                    (string, addr) = res[0][0].recvfrom(1024)
+            while int(time.time() - old_time) < self.reply_wait:
+                self.send_search(search_msg)
+                try:
+                    (string, addr) = s.recvfrom(1024)
                     replies.append([addr[0], string])
+                    print(string)
+                except Exception as e:
+                    continue
+                time.sleep(1)
+
+            #s.setsockopt(socket.IPPROTO_IP, socket.IP_DROP_MEMBERSHIP,  group+iface)
 
         except Exception as e:
             print(e)
         finally:
             #Cleanup socket.
             if s != None:
+                s.shutdown(socket.SHUT_RDWR)
                 s.close()
                 s = None
 
         #Error: no UPnP replies - try guess gateway.
         if replies == []:
             default_gateway = get_default_gateway(self.interface)
+            print("Replies = none")
+            print("Trying to guess gateway address.")
+            print(default_gateway)
             if default_gateway == None:
                 return None
             else:
@@ -99,6 +145,7 @@ class UPnP():
 
                         #Check response is XML and device is a router.
                         if 'InternetGatewayDevice' in buf:
+                            print("Guessed gateway address.")
                             return gateway_addr
                     except:
                         continue
@@ -131,7 +178,7 @@ class UPnP():
 
         return gateway_addr
 
-    def forward_port(self, proto, src_port, dest_ip, dest_port=None):
+    def forward_port(self, proto, src_port, dest_ip, dest_port=None, skip=0):
         """
         Creates a new mapping for the default gateway to forward ports.
         Source port is from the perspective of the original client.
@@ -161,6 +208,8 @@ class UPnP():
 
         #Find gateway address.
         gateway_addr = self.find_gateway()
+        print("Gateway addr = ")
+        print(gateway_addr)
         if gateway_addr == None:
             raise Exception("Unable to find UPnP compatible gateway.")
 
@@ -198,19 +247,26 @@ class UPnP():
                            )
             req.add_header('Content-type', 'application/xml')
             res = urllib.request.urlopen(req, timeout=self.timeout)
-        except:
+        except Exception as e:
+            print(e)
             #Sometimes the device is busy - try one more time.
             try:
-                self.forward_port(proto, src_port, dest_ip, dest_port)
-            except:
+                if not skip:
+                    self.forward_port(proto, src_port, dest_ip, dest_port, 1)
+                else:
+                    raise Exception("Second attempt to UPnP forward failed.")
+            except Exception as e:
+                print(e)
                 raise Exception("Failed to add port mapping.")
 
 if __name__ == "__main__":
     port = 50500
-    addr = "192.168.0.45" 
-    #UPnP().forward_port("TCP", port, addr)
+    addr = "192.168.0.3" 
+    UPnP().forward_port("TCP", port, addr)
     forwarding_servers = [{"addr": "www.coinbend.com", "port": 80, "url": "/net.php"}]
-    #print(is_port_forwarded(str(port), "TCP", forwarding_servers))
+    print(is_port_forwarded(addr, str(port), "TCP",  forwarding_servers))
+
+
 
 
 
