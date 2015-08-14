@@ -3,6 +3,7 @@ from .sock import *
 import urllib.request, re, sys, select, socket, time
 import multiprocessing
 import threading
+import netifaces
 
 """
 This is a modified version of "UPnP-Exploiter." It's been
@@ -37,88 +38,96 @@ class UPnP():
         self.reply_wait = 15
 
         #Socket timeout.
-        self.timeout = 3
+        self.timeout = 1
 
         #Networking interface.
         self.interface = interface
 
-    def create_multicast(self, address, port, reuse=0):
-            #Create socket for UDP broadcasts.
-            s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-            #REUSE causes problems with windows: i.e. dropped packets
-            #When sockets aren't gracefully closed from app crashes
-            if reuse:
-                s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-            s.setsockopt(socket.IPPROTO_IP, socket.IP_MULTICAST_TTL, 32)
-            s.bind((get_lan_ip(), port))
-            s.setsockopt(socket.IPPROTO_IP, socket.IP_MULTICAST_LOOP, 0)
+    def create_multicast(self, addr, port, reuse=0):
+        #Create socket for UDP broadcasts.
+        s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        #REUSE causes problems with windows: i.e. dropped packets
+        #When sockets aren't gracefully closed from app crashes
+        if reuse:
+            s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+        s.setsockopt(socket.IPPROTO_IP, socket.IP_MULTICAST_TTL, 32)
+        s.bind((addr, port))
+        s.setsockopt(socket.IPPROTO_IP, socket.IP_MULTICAST_LOOP, 0)
 
-            #Join multicast group.
-            iface = socket.inet_aton(get_lan_ip()) # listen for multicast packets on this interface.
-            s.setsockopt(socket.IPPROTO_IP, socket.IP_MULTICAST_IF, iface)
-            group = socket.inet_aton(address)
-            s.setsockopt(socket.IPPROTO_IP, socket.IP_ADD_MEMBERSHIP, group+iface)
-            s.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
-            s.settimeout(int(self.timeout))
+        #Join multicast group.
+        iface = socket.inet_aton(addr) # listen for multicast packets on this interface.
+        s.setsockopt(socket.IPPROTO_IP, socket.IP_MULTICAST_IF, iface)
+        group = socket.inet_aton(self.multicast)
+        s.setsockopt(socket.IPPROTO_IP, socket.IP_ADD_MEMBERSHIP, group + iface)
+        s.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
+        s.settimeout(0)
 
-            return s
+        return s
 
-    def send_search(self, msg):
-        s = self.create_multicast(self.multicast, 0)
+    def close_socket(self, s):
+        if s:
+            try:
+                s.shutdown(socket.SHUT_RDWR)
+            except:
+                pass
+
+            try:
+                s.close()
+            except:
+                pass
+
+    def send_search(self, msg, addr):
+        s = self.create_multicast(addr, 0)
         s.sendto(bytes(msg, 'UTF-8'), (self.multicast, self.upnp_port))
-        s.shutdown(socket.SHUT_RDWR)
-        s.close()
-        
+        self.close_socket(s)
 
     #Uses broadcasting to find default UPnP compatible gateway.
     def find_gateway(self):
-        print("Trying to find UPnP compat gateway.")
-        replies = []
-        s = None
-        #Create socket for UDP broadcasts.
-        try:
-            s = self.create_multicast(self.multicast, self.upnp_port)
-        except Exception as e:
-            print(e)
-            """
-            s = self.create_multicast(self.multicast, self.upnp_port, reuse=1)
-            s.shutdown(socket.SHUT_RDWR)
-            s.close()
-            exit()
-            """
+        print("Trying to find UPnP compatible gateway.")
 
-        try:
-
-            #Broadcast search message to multicast address.
-            search_msg =  "M-SEARCH * HTTP/1.1\r\n"
-            search_msg += "HOST: %s:%s\r\n" % (str(self.multicast), str(self.upnp_port))
-            search_msg += "ST: ssdp:all\r\n"
-            search_msg += "MX: 3\r\n"
-            search_msg += "\r\n"
-
-
-            #Receive replies for n seconds..
-            old_time = time.time()
-            while int(time.time() - old_time) < self.reply_wait:
-                self.send_search(search_msg)
-                try:
-                    (string, addr) = s.recvfrom(1024)
-                    replies.append([addr[0], string])
-                    print(string)
-                except Exception as e:
+        """
+        Responses are monitored on every possible interface because on other operating systems *cough* Windows *cough* it doesn't process multicast very well ...
+        """
+        cons = []
+        ips = []
+        for interface in netifaces.interfaces():
+            try:
+                ip = get_lan_ip(interface)
+                if ip == None:
                     continue
-                time.sleep(1)
+        
+                con = self.create_multicast(ip, self.upnp_port)
+            except:
+                continue
 
-            #s.setsockopt(socket.IPPROTO_IP, socket.IP_DROP_MEMBERSHIP,  group+iface)
+        
+            cons.append(con)
+            ips.append(ip)
 
-        except Exception as e:
-            print(e)
-        finally:
-            #Cleanup socket.
-            if s != None:
-                s.shutdown(socket.SHUT_RDWR)
-                s.close()
-                s = None
+        #Broadcast search message to multicast address.
+        search_msg =  "M-SEARCH * HTTP/1.1\r\n"
+        search_msg += "HOST: %s:%s\r\n" % (str(self.multicast), str(self.upnp_port))
+        search_msg += "ST: ssdp:all\r\n"
+        search_msg += "MX: 3\r\n"
+        search_msg += "\r\n"
+        for ip in ips:
+            self.send_search(search_msg, ip)
+            
+        #Log replies from all interfaces.
+        replies = []
+        start_time = time.time()
+        while int(time.time() - start_time) < self.reply_wait:
+            for con in cons:
+                res = select.select([con], [], [], self.timeout)
+                if len(res[0]):
+                    (string, addr) = res[0][0].recvfrom(1024);
+                    replies.append([addr[0], string])
+
+            time.sleep(1)
+
+        #Graceful shutdown.
+        for con in cons:
+            self.close_socket(con)
 
         #Error: no UPnP replies - try guess gateway.
         if replies == []:
