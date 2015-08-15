@@ -3,6 +3,8 @@ from .sock import *
 import urllib.request, re, sys, select, socket, time
 import multiprocessing
 import threading
+import subprocess
+import platform
 
 """
 This is a modified version of "UPnP-Exploiter." It's been
@@ -205,6 +207,12 @@ class UPnP():
         #Source port is forwarded to same destination port number.
         if dest_port == None:
             dest_port = src_port
+
+        #Use UPnP binary for forwarding on Windows.
+        if platform.system() == "Windows":
+            cmd = "upnpc-static.exe -a %s %s %s %s" % (get_lan_ip(), str(src_port), str(dest_port), proto) 
+            subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE).stdout.read()
+            return
 
         #Find gateway address.
         gateway_addr = self.find_gateway()
