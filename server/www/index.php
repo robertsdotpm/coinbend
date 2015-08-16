@@ -2,6 +2,7 @@
 <html>
 	<head>
 		<title>Coinbend</title>
+		<link rel="shortcut icon" type="image/png" href="favicon.ico"/>
 		<meta http-equiv="content-type" content="text/html; charset=utf-8" />
 		<meta name="description" content="" />
 		<meta name="keywords" content="" />
@@ -68,15 +69,25 @@
    <span>Contact</span>
    <ul style="-moz-user-select: none; position: absolute; z-index: 1000; left: 39.2px; top: 71px; opacity: 1; display: none;" class="dropotron dropotron-level-0 center">
 	<li style="white-space: nowrap;"><a href="mailto:coinbend@gmail.com" style="display: block;">coinbend@gmail.com</a></li>
-      <li style="white-space: nowrap;"><a href="https://bitcointalk.org/index.php?action=profile;u=489959" style="display: block;">Bitcointalk</a></li>
+      <li style="white-space: nowrap;"><a href="https://bitcointalk.org/index.php?action=profile;u=531479" style="display: block;">Bitcointalk</a></li>
       <li style="white-space: nowrap;"><a href="http://www.facebook.com/Coinbend" style="display: block;">Facebook</a></li>
       <li style="white-space: nowrap;"><a href="http://www.youtube.com/Coinbend" style="display: block;">YouTube</a></li>
       <li style="white-space: nowrap;"><a href="http://www.twitter.com/Coinbend" style="display: block;">Twitter</a></li>
    </ul>
 </li>
-                                          <li><a href="http://www.coinbend.com/coinbend.pdf">Whitepaper</a></li>        
+
+<li style="-moz-user-select: none; cursor: pointer; white-space: nowrap; opacity: 1;" class="opener">
+   <span>Demo</span>
+   <ul style="-moz-user-select: none; position: absolute; z-index: 1000; left: 39.2px; top: 71px; opacity: 1; display: none;" class="dropotron dropotron-level-0 center">
+	<li style="white-space: nowrap;"><a href="http://alice.coinbend.com/" style="display: block;">Alice</a></li>
+      <li style="white-space: nowrap;"><a href="http://bob.coinbend.com/" style="display: block;">Bob</a></li>
+   </ul>
+</li>
+
+
+                                          <li><a href="http://www.coinbend.com/whitepaper.pdf">Whitepaper</a></li>        
                           			
-									<li><a href="#bottom">Source Code</a></li>
+									<li><a href="http://www.github.com/robertsdotpm/coinbend">Source Code</a></li>
 
 
 								</ul>
@@ -97,8 +108,10 @@
 							<div id="content" class="12u">
                                 <div class="fade-box">
 									<header class="major">
-										<h2>Bitcoin or dollars?</h2>
-										<span class="byline">Coinbend is a secure P2P altcoin exchange that's practical.</span>
+										<h2>In eight words:</h2>
+										<span class="byline">
+Coinbend lets you swap alt-coins with complete strangers.
+</span>
 									</header>
 									
 									<div class="row">
@@ -134,8 +147,17 @@
 									</div>
 								</div>
 								<div class="actions">
-									<span class="byline">This project is currently under development.</span>
-									<a href="http://www.google.com/" class="button button-big">Coming Soon</a>
+									<span class="byline">This project is currently in pre-alpha stage.</span>
+									<a href="<?php
+	if(strtoupper(substr(PHP_OS, 0, 3)) === 'WIN')
+	{
+		echo("windows.zip");
+	}
+	else
+	{
+		echo("linux.zip");
+	}
+?>" class="button button-big">Download Now</a>
 								</div>
 
 							</div>
