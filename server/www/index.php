@@ -149,13 +149,14 @@ Coinbend lets you swap alt-coins with complete strangers.
 								<div class="actions">
 									<span class="byline">This project is currently in pre-alpha stage.</span>
 									<a href="<?php
-	if(strtoupper(substr(PHP_OS, 0, 3)) === 'WIN')
+	$agent = $_SERVER['HTTP_USER_AGENT'];
+	if(preg_match('/Linux/',$agent))
 	{
-		echo("windows.zip");
+		echo("linux.zip");
 	}
 	else
 	{
-		echo("linux.zip");
+		echo("windows.zip");
 	}
 ?>" class="button button-big">Download Now</a>
 								</div>
