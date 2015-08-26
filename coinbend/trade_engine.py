@@ -109,7 +109,7 @@ class TradeEngine():
         #Check balance is enough to cover trade.
         rpc = self.coins[trade.to_recv.currency]["rpc"]["sock"]
         balance = C(rpc.getbalance())
-        if trade.to_send > balance:
+        if trade.to_send < balance:
             raise Exception("Insufficent balance to cover trade.")
 
         #Generate a receive address.
