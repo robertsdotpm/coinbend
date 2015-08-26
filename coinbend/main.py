@@ -348,6 +348,11 @@ def main():
             if hybrid_reply_status == -1:
                 continue
 
+            print("Hybrid reply: ")
+            print(hybrid_reply.msg)
+            print(hybrid_reply.network)
+            print(hybrid_reply.recipient)
+            print(hybrid_reply.routes)
             def route_hybrid_reply(hybrid_reply):
                 #Check network.
                 if hybrid_reply.network != "any":
@@ -375,6 +380,13 @@ def main():
                                 print("Invalid node typeeee")
                                 continue
 
+                            print("Node type =")
+                            print(node_type)
+                            print("Node add = ")
+                            print(node_addr)
+                            print("Node port = ")
+                            print(node_port)
+
                             #Connect route.
                             #Todo: only open new conncetion if it doesn't already exist.
                             if hybrid_reply.network == "any":
@@ -382,10 +394,17 @@ def main():
                             else:
                                 valid_networks = [hybrid_reply.network]
 
+                            print(valid_networks)
                             for valid_network in valid_networks:
                                 con = networks[valid_network].add_node(node_addr, node_port, node_type)
                                 if con != None:
                                     break
+
+                        if con != None:
+                            break
+
+                print(con)
+                print(msg)
 
                 #Route reply.
                 if hybrid_reply.recipient == "route":

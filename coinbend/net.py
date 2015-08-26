@@ -148,6 +148,7 @@ class Net():
 
         #Already connected.
         for node in self.outbound + self.inbound:
+            print(node["ip"])
             if node_ip == node["ip"]:
                 return node["con"]
 
