@@ -260,7 +260,7 @@ class Trade():
             else:
                 self.action = "buy"
             self.pair = trading_pair_flipped
-            self.amount, self.ppc = self.total, C(self.total.as_decimal / self.amount.as_decimal)
+            self.amount, self.ppc = self.total, C(self.amount.as_decimal / self.total.as_decimal)
             self.total = self.amount * self.ppc
 
         #Set currency for trade amounts.
