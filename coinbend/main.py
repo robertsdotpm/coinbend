@@ -109,7 +109,7 @@ def main():
     #Main event loop.
     networks = {
         "p2p_net": p2p_net,
-        "direct_net": direct_net
+        "direct_net": direct_net,
     }
     p2p_net.seen_messages = direct_net.seen_messages = seen_messages
     hybrid_replies = []
@@ -350,9 +350,10 @@ def main():
 
             def route_hybrid_reply(hybrid_reply):
                 #Check network.
-                if hybrid_reply.network not in networks:
-                    print("Invalid network.")
-                    return
+                if hybrid_reply.network != "any":
+                    if hybrid_reply.network not in networks:
+                        print("Invalid network.")
+                        return
 
                 #Generate dynamic message if needed.
                 if callable(hybrid_reply.msg):
