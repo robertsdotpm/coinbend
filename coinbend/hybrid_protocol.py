@@ -487,7 +487,7 @@ class HybridProtocol():
 
                         #Broadcast new match.
                         print(routes)
-                        reply = HybridReply([open_msg, match_msg], "direct_net", "route")
+                        reply = HybridReply([open_msg, match_msg], "any", "route")
                         reply.add_routes(routes)
                         replies.append(reply)
 
@@ -693,7 +693,7 @@ class HybridProtocol():
 
             #Build reply.
             return_refund_sig_msg = self.new_return_refund_sig(contract_hash, refund_sig, contract.ecdsa_us[0])
-            new_hybrid_reply = HybridReply([return_refund_sig_msg], "direct_net", "source")
+            new_hybrid_reply = HybridReply([return_refund_sig_msg], "any", "source")
             if status_checker != None:
                new_hybrid_reply.set_status_checker(status_checker)
 

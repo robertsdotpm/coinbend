@@ -163,7 +163,7 @@ def main():
                         routes = [
                             dest_con,
                         ]
-                        new_hybrid_reply = HybridReply([open_msg], "direct_net", "route", max_retransmissions)
+                        new_hybrid_reply = HybridReply([open_msg], "any", "route", max_retransmissions)
                         new_hybrid_reply.add_routes(routes)
                     else:
                         new_hybrid_reply = HybridReply([open_msg], "p2p_net", "everyone", max_retransmissions)
@@ -376,11 +376,15 @@ def main():
 
                             #Connect route.
                             #Todo: only open new conncetion if it doesn't already exist.
-                            con = networks[hybrid_reply.network].add_node(node_addr, node_port, node_type)
-                            if con == None:
-                                continue
+                            if hybrid_reply.network == "any":
+                                valid_networks = list(networks)
                             else:
-                                break
+                                valid_networks = [hybrid_reply.network]
+
+                            for valid_network in valid_networks:
+                                con = networks[valid_network].add_node(node_addr, node_port, node_type)
+                                if con != None:
+                                    break
 
                 #Route reply.
                 if hybrid_reply.recipient == "route":
@@ -390,7 +394,12 @@ def main():
 
                 #Broadcast.
                 if hybrid_reply.recipient == "everyone":
-                    networks[hybrid_reply.network].broadcast(msg)
+                    if hybrid_reply.network == "any":
+                        networks["p2p_net"].broadcast(msg)
+                        networks["direct_net"].broadcast(msg)
+                    else:
+                        networks[hybrid_reply.network].broadcast(msg)
+
                     return
 
                 #Source.
