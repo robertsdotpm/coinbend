@@ -73,6 +73,7 @@ class TradeEngine():
         our_trade_fee = trade.apply_trade_fee(trade_fee, optional=1)
         their_trade_fee = trade.apply_trade_fee(trade_fee, optional=1, toggle=1)
         trade.apply_trade_fee(trade_fee)
+        print(str(trade))
 
         """
         All outputs in the resulting setup TX need to be greater than the dust threshold otherwise the TX will never confirm. The trade fee in this sense is actually extremely important for allowing the micro-collateral through. 
@@ -103,7 +104,6 @@ class TradeEngine():
         if trade.to_recv < self.coins[trade.to_recv.currency]["dust_threshold"]:
             print(str(trade.to_recv))
             print(str(self.coins[trade.to_recv.currency]["dust_threshold"]))
-            print(str(trade))
             raise Exception("Receiving amount for this trade is less than the dust threshold amount and can't be broadcast.")
 
         #Check balance is enough to cover trade.
