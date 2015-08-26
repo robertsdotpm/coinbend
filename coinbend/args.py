@@ -7,6 +7,9 @@ if __name__ != "__main__":
     #Option: Config files.
     parser.add_argument('-config', '--config', action="store", dest="config", help="query string", default=None)
 
+    #Option: data dir.
+    parser.add_argument('-datadir', '--datadir', action="store", dest="datadir", help="query string", default=None)
+
     #Option: interface.
     parser.add_argument('-interface', '--interface', action="store", dest="interface", help="query string", default=None)
 

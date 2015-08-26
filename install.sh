@@ -7,7 +7,7 @@
 sudo apt-get install gcc
 apt-get install make
 sudo apt-get install git
-apt-get install libsdl-dev libsdl-image1.2-dev libsdl-mixer1.2-dev libsdl-ttf2.0-dev libsmpeg-dev libportmidi-dev libavformat-dev libswscale-dev libjpeg-dev libfreetype6-dev openssl-devel libssl-dev libbz2-dev
+apt-get install libsdl-dev libsdl-image1.2-dev libsdl-mixer1.2-dev libsdl-ttf2.0-dev libsmpeg-dev libportmidi-dev libavformat-dev libswscale-dev libjpeg-dev libfreetype6-dev openssl-devel libssl-dev libbz2-dev python-dev
 
 
 sudo apt-get install python-setuptools python-pip python-dev python3-dev libmysqlclient-dev python-pyaudio python-pygame python-nose bzr cython

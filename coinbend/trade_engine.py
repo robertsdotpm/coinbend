@@ -80,21 +80,29 @@ class TradeEngine():
         The code bellow ensures the trade size vs trade fee will result in all outputs larger than the dust threshold.
         """
         if our_trade_fee < self.coins[trade.to_send.currency]["dust_threshold"]:
+            print(str(our_trade_fee))
+            print(str(self.coins[trade.to_send.currency]["dust_threshold"]))
             raise Exception("The resulting trade fee for our trade is less than the dust threshold and can't be broadcast.")
 
         if our_trade_fee != self.coins[trade.to_send.currency]["dust_threshold"] and self.demo:
             raise Exception("Demo mode is active so the required send amount is limited to prevent abuse.")
 
         if their_trade_fee < self.coins[trade.to_recv.currency]["dust_threshold"]:
+            print(str(their_trade_fee))
+            print(str(self.coins[trade.to_recv.currency]["dust_threshold"]))
             raise Exception("The resulting trade fee for their side of the trade is less than the dust threshold and can't be broadcast.")
 
         if their_trade_fee != self.coins[trade.to_recv.currency]["dust_threshold"] and self.demo:
             raise Exception("Demo mode is active so the required receive amount is limited to prevent abuse.")
 
         if trade.to_send < self.coins[trade.to_send.currency]["dust_threshold"]:
+            print(str(trade.to_send))
+            print(str(self.coins[trade.to_send.currency]["dust_threshold"]))
             raise Exception("Sending amount for this trade is less than the dust threshold amount and can't be broadcast.")
 
         if trade.to_recv < self.coins[trade.to_recv.currency]["dust_threshold"]:
+            print(str(trade.to_recv))
+            print(str(self.coins[trade.to_recv.currency]["dust_threshold"]))
             raise Exception("Receiving amount for this trade is less than the dust threshold amount and can't be broadcast.")
 
         #Check balance is enough to cover trade.
