@@ -103,6 +103,7 @@ class TradeEngine():
         if trade.to_recv < self.coins[trade.to_recv.currency]["dust_threshold"]:
             print(str(trade.to_recv))
             print(str(self.coins[trade.to_recv.currency]["dust_threshold"]))
+            print(str(trade))
             raise Exception("Receiving amount for this trade is less than the dust threshold amount and can't be broadcast.")
 
         #Check balance is enough to cover trade.
