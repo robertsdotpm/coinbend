@@ -6,7 +6,7 @@ Coinbend is an experimental, high security, decentralized exchange for cryptocur
 
 The exchange was built in response to the numerous hacks that have plagued the Bitcoin world which the software tries to avoid by removing the need for a third-party to be trusted with the user's money. The software is currently in a very experimental state and lacks a proper order book so users must find each other manually to trade but I'm releasing this as version 0.001.
 
-Consider this the first practical P2P exchange for alt-coins. All existing exchanges make unrealistic assumptions about attackers, require the use of collateral as a fail-safe, or strictly depend on third-party trust to exchange currencies (either directly or indirectly as a side-effect of transaction malleability) but Coinbend avoids these problems by using modified micro-payment channels.
+Consider this the first practical P2P exchange for alt-coins. All existing exchanges make unrealistic assumptions about attackers, require the use of collateral as a fail-safe, or strictly depend on third-party trust to exchange currencies (either directly or indirectly as a side-effect of transaction malleability) but Coinbend avoids these problems by using modified micro-payment channels + timechains.
 
 > "In crypto with trust."
 
@@ -32,7 +32,7 @@ Install the dependencies you need for Vagrant and Virtual box.
 sudo apt-get install virtualbox vagrant
 ```
 
-To have the virtual machine downloaded and setup a Coinbend dev environment do:
+Download the virtual machine and setup a Coinbend dev environment:
 ```sh
 cd coinbend/vagrant
 sudo vagrant up
@@ -101,10 +101,12 @@ vagrant@precise32:~$ python3.3 -m "coinbend.main" -externalexchange 0 -erateinit
 
 These command line arguments tell the software not to calculate the exchange rate; not to detect the clock skew for the system clock; to bind to a specific virtual interface; to skip trying to find other nodes on the P2P network; to use LAN IP addresses for trade messages instead of WAN IPs (because WAN IPs don't work behind the same router); to switch the node type to passive (meaning you can accept inbound connections); to open a new order; and for Bob to connect to Alice.
 
+> Note that where an IP address is used as an argument you are expected to substitute it with  the corresponding IP address for your interface. So for example: Alice is using eth1:1 and Bob is using eth1:2. Make sure that all the IPs they are using correspond to the right address for that interface by typing ifconfig to get the IP.
+
 ##### Trading via the UI
 
-1. Alice UI: http://192.168.1.147:7777 
-2. Bob UI: http://192.168.1.148:7777
+1. E.g. Alice UI window on http://192.168.1.147:7777 
+2. E.g. Bob UI window on http://192.168.1.148:7777
 3. Alice: open a new order to buy 200 Dogecoins at 0.001 Litecoins per Dogecoin. Click submit. A confirmation dialogue will pop up.
 4. Alice: at the bottom of the confirm dialogue click "generate copy of Node ID"
 5. Alice: cnt + c
@@ -117,14 +119,15 @@ These command line arguments tell the software not to calculate the exchange rat
 
 Video guide is here: https://www.youtube.com/watch?v=h7maCX8XKbg
 
-This is how I test the software most of the time (I told you this was experimental.)
+I usually use the command line to test trading but the UI is easier for users obviously so it helps to be able to check this works. 
 
 ### A brief primer on what everything is
 
-Infrastructure for the project consists of 3 main components:
+Infrastructure for the project consists of 4 main components:
 * Rendezvous server - used by nodes to connect to the p2p network
 * Contract server - makes contracts more atomic + fixes a few security edge cases
 * UI server - light weight bottle.py web server that hosts the UI
+* Coinbend lighttpd - runs basic PHP scripts on www.coinbend.com
 
 Folder structure:
 * coinbend - all the main code
@@ -183,13 +186,13 @@ What file are:
 > So then ... there's no real documentation? Unfortunately no. As you can see: there's a lot of modules and a lot of code and I'm still the only developer but its definitely on my todo list.
 
 Papers:
-Coinbend white paper - www.coinbend.com/whitepaper.pdf
-Timechain white paper - www.roberts.pm/timechain
+* Coinbend white paper - www.coinbend.com/whitepaper.pdf
+* Timechain white paper - www.roberts.pm/timechain
 
 ### Development
 Want to contribute? Great!
 
-Contract me at matthew@roberts.pm if you need any help.
+Contract me at matthew@roberts.pm if you need any help. Also, I'm still looking for a partner who wants to team up and help me get this to beta.
 
 ### License
 There's no license yet but all the code will be release under LGPL soon (when I have time.) The UI won't be released under an open source license but it will be free to use and download.
