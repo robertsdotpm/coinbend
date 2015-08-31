@@ -2,11 +2,11 @@
 
 ![Coinbend UI](http://www.coinbend.com/screenshot.png)
 
-Coinbend is an experimental, high security, decentralized exchange for trading cryptocurrencies that lets complete strangers trade coins with each other without the risk of fraud. It works by using a special combination of time-based cryptography along with a bunch of game theory to allow trades to take place with conventional smart contracts, thereby avoiding the need for a middleman to be trusted with a customer’s deposits when exchanging money.
+Coinbend is an experimental, high security, decentralized exchange for cryptocurrencies that lets strangers trade coins with each other without the risk of fraud. It works by using a combination of time-based crypto with a bunch of game theory to allow trades to take place with conventional smart contracts.
 
-The exchange was built in response to the numerous hacks and scams that have plagued the Bitcoin world and was built specifically to avoid the need for a third-party to be trusted with any leverage over a customer's money. The software is currently in an an experimental state and lacks a proper order book so users must find each other through another channel to trade but the software is working so I'm releasing this as version 0.001.
+The exchange was built in response to the numerous hacks that have plagued the Bitcoin world which the software tries to avoid by removing the need for a third-party to be trusted with the user's money. The software is currently in a very experimental state and lacks a proper order book so users must find each other manually to trade but I'm releasing this as version 0.001.
 
-Consider this the first practical and true P2P exchange for alt-coins. All existing attempts make unrealistic assumptions about attackers, require the use of collateral as a fail-safe, or strictly depend on third-party trust to exchange currencies (either directly or indirectly as a side-effect of transaction malleability) but Coinbend avoids these problems through the use of modified micro-payment channels and timechain enforced refunds.
+Consider this the first practical P2P exchange for alt-coins. All existing exchanges make unrealistic assumptions about attackers, require the use of collateral as a fail-safe, or strictly depend on third-party trust to exchange currencies (either directly or indirectly as a side-effect of transaction malleability) but Coinbend avoids these problems by using modified micro-payment channels.
 
 > "In crypto with trust."
 
@@ -16,13 +16,13 @@ Consider this the first practical and true P2P exchange for alt-coins. All exist
 Pre-alpha v0.01
 
 ### Build
-Coinbend uses Vagrant for reproducible development environments. Vagrant is like automation for VirtualBox and means you can have project specific developer environments that you can bring up with a single command. Especially useful for Coinbend which has a lot of dependencies that could easily break across environments.
+Coinbend uses Vagrant to build reproducible development environments. Vagrant is like automation for VirtualBox and means you can have project specific developer environments that you can bring up with a single command (especially useful for Coinbend which has a lot of dependencies that could easily break across environments.)
 
-First, fork the project to your Github and clone it.
+First, fork the project to your Github and clone it to a new directory.
 
 ```sh
-mkdir coinbend-vagrant
-cd coinbend-vagrant
+mkdir vagrant
+cd vagrant
 git clone [your-forked-copy-of-coinbend]
 ```
 
@@ -32,7 +32,7 @@ Install the dependencies you need for Vagrant and Virtual box.
 sudo apt-get install virtualbox vagrant
 ```
 
-To have the virtual machine downloaded and setup for Coinbend develop:
+To have the virtual machine downloaded and setup a Coinbend dev environment do:
 ```sh
 cd coinbend/vagrant
 sudo vagrant up
@@ -40,11 +40,11 @@ sudo vagrant up
 
 This command will take a while to complete as it has to download Python3.3 from scratch, compile it, install all the Python packages, download Litecoin + Dogecoin, plus do a lot of other stuff.
 
-You can now make changes to the code with your favourite editor on your main OS and when you need to test the changes you can type sudo vagrant ssh to open a shell prompt to the VM. The VM already has everything needed to run the software from source so it's easy to hack the code.
+You can now make changes to the code with your favourite editor on your main OS and when you need to test the changes you can type sudo vagrant ssh to open a shell prompt to the VM. The VM already has everything needed to run the software from source so it's easy to hack at the code.
 
 ## Hacking
 
-When you first login to the custom VM it will start up Litecoin and Dogecoin on the testnet + setup a number of virtual interfaces. Coinbend is currently designed to work dynamically with full node cryptocurrencies so unfortunately you will have to wait for the blockchains to download. On fast Internet that's around a few hours of waiting but on a slow PC + Internet its incredibly painful: around 1 - 2 days of waiting for the chains to download and validate.
+When you first login to the custom VM it will start up Litecoin and Dogecoin on the testnet + setup a number of virtual interfaces. Coinbend is currently designed to work dynamically with full node cryptocurrencies so unfortunately you will have to wait for the blockchains to download. On fast Internet that's around 2 hours of waiting but on a slow PC + Internet its incredibly painful: around 1 - 2 days of waiting for the chains to download and validate.
 
 ```sh
 # 1 sep 2015 - blocks you need to DL.
@@ -61,7 +61,7 @@ vagrant@precise32:~$ /home/vagrant/coins/dogecoin/bin/dogecoin-cli getinfo
 
 ```
 
-After you login a number of virtual interfaces wil ble created. This allows you to simulate the interactions of nodes on a P2P network via the command line and by default IPs bound to eth1 and eth1:x will be accessible from your main / host OS so accessing the web UI of the software is as easy as visiting the IP in your browser.
+After you login a number of virtual interfaces will be created. This allows you to simulate the interactions of nodes on a P2P network via the command line. By default IPs bound to eth1 and eth1:x will be accessible from your main / host OS so accessing the web UI of the software is as easy as visiting the IP in your browser.
 
 To start the software for the first time:
 ```sh
@@ -81,7 +81,7 @@ And here's how it looks in the browser:
 * Alice demo - http://alice.coinbend.com/
 * Bob demo - http://bob.coinbend.com/
 
-At this point you want to go to some faucets and send testcoins to your account addresses. Shoot me an email at matthew@roberts.pm if you need some testcoins or generate them yourself:
+At this point you want to go to some faucets and send testcoins to your account addresses. Shoot me an email at matthew@roberts.pm if you need some testcoins or mine them yourself with the RPC command:
 ```sh
 # Don't run them both at the same time - it will be too slow!
 vagrant@precise32:~$ /home/vagrant/coins/litecoin/bin/litecoin-cli setgenerate true
@@ -110,7 +110,7 @@ These command line arguments tell the software not to calculate the exchange rat
 5. Alice: cnt + c
 6. Bob: open a sell order to sell 200 Dogecoins at 0.001 Litecoins per Dogecoin. Click submit. A new confirmation dialogue will pop up.
 7. Bob: cnt + v into the input box to paste Alice's node ID.
-8. Bob: click "generae copy of Node ID"
+8. Bob: click "generate a copy of Node ID"
 9. Bob: cnt + c
 10. Alice: cnt + v into the input box to paste Bob's node ID.
 11. Submit the trade on both windows.
@@ -180,7 +180,7 @@ What file are:
 * username_complexity.py - ensures usernames are unique and can't be brute forced
 * user_web_server.py - the main web app for the UI. Also supports routes and API calls
 
-> So then ... there's no real documentation? Unfortunately no. As you can see: there's a lot of modules and a lot of code and I'm the only developer but its definitely on my todo list.
+> So then ... there's no real documentation? Unfortunately no. As you can see: there's a lot of modules and a lot of code and I'm still the only developer but its definitely on my todo list.
 
 Papers:
 Coinbend white paper - www.coinbend.com/whitepaper.pdf
