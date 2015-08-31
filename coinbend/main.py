@@ -54,6 +54,7 @@ def main():
     p2p_protocol = HybridProtocol(config, sys_clock, nacl_crypt, p2p_net, coins, e_exchange_rate, trade_engine)
     contract_client = ContractClient(p2p_protocol, config)
     direct_protocol = HybridProtocol(config, sys_clock, nacl_crypt, direct_net, coins, e_exchange_rate, trade_engine, contract_client)
+    p2p_protocol.contract_client = contract_client
 
     #Initialize software with one test trade.
     if args.trade != None:
@@ -304,6 +305,8 @@ def main():
                 print(msg)
                 replies = direct_protocol.understand(msg, seen_messages, con)
                 for reply in replies:
+                    print("Direct msg reply = ")
+                    print(reply)
                     if type(reply) == str:
                         con.send_line(reply)
 
@@ -322,6 +325,8 @@ def main():
                 print(msg)
                 replies = p2p_protocol.understand(msg, seen_messages, con)
                 for reply in replies:
+                    print("p2p msg reply = ")
+                    print(reply)
                     if type(reply) == str:
                         p2p_net.broadcast(reply, con)
 
@@ -405,10 +410,13 @@ def main():
 
                 print(con)
                 print(msg)
+                if con != None:
+                    print(con.s.getpeername())
 
                 #Route reply.
                 if hybrid_reply.recipient == "route":
                     if con != None:
+                        print("Sending message route.")
                         con.send_line(msg)
                         return
 
@@ -425,6 +433,7 @@ def main():
                 #Source.
                 if hybrid_reply.recipient == "source":
                     if hybrid_reply.source_con != None:
+                        print("Sending message source.")
                         hybrid_reply.source_con.send_line(msg)
                         return
 

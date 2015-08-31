@@ -379,11 +379,9 @@ class Net():
             except:
                 pass
 
-        """
-        Determine node type. This is called each time even if its been passed as a cmd-line option because the software still needs to check that the port has been successfully forwarded.
-        """
+        #Determine node type.
         self.start_passive_server()
-        if self.node_type != "active":
+        if self.node_type == "unknown":
             self.node_type = self.determine_node()
 
         #Close stray cons from determine_node() tests.

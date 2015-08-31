@@ -266,6 +266,7 @@ class Sock:
     #Sends a new message delimitered by a new line.
     def send_line(self, msg):
         if not self.connected:
+            print("Connection died before send!")
             return 0
 
         msg += "\r\n"
@@ -273,6 +274,8 @@ class Sock:
             self.s.send(msg.encode("ascii"))
             return 1
         except Exception as e:
+            print(e)
+            print("Connection died before send 2!")
             self.close()
             return 0
 

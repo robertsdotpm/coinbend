@@ -26,6 +26,10 @@ import uuid
 import time
 import threading
 
+#TOdo: there's an error with getting this occasionally.
+print("Wan ip = ")
+print(get_wan_ip())
+
 #Parse config file.
 ParseConfig = config = ParseConfig(os.path.join(data_dir, "config.json"))
 
@@ -235,11 +239,7 @@ if args.skipnet == None:
     direct_net.start()
     direct_net.advertise()
     for node in direct_nodes:
-        try:
-            direct_net.add_node(node["addr"], node["port"], node["type"])
-        except Exception as e:
-            error = parse_exception(e, output=1)
-            log_exception(error_log_path, error)
+        direct_net.add_node(node["addr"], node["port"], node["type"])
 
     #Save detected network details.
     direct_node_type = node_type = direct_net.node_type
@@ -260,15 +260,12 @@ if args.skipnet == None:
         p2p_net.disable_forwarding()
     p2p_net.start()
     for node in p2p_nodes:
-        try:
-            con = p2p_net.add_node(node["addr"], node["port"], node["type"])
-            print("ADding node")
-            print(node["addr"])
-            print(node["port"])
-            print(con)
-        except Exception as e:
-            error = parse_exception(e, output=1)
-            log_exception(error_log_path, error)
+        con = p2p_net.add_node(node["addr"], node["port"], node["type"])
+        print("ADding node")
+        print(node["addr"])
+        print(node["port"])
+        print(con)
+
     if args.skipbootstrap == None:
         p2p_net.bootstrap()
     else:

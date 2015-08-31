@@ -106,8 +106,17 @@ class TradeEngine():
             print(str(self.coins[trade.to_recv.currency]["dust_threshold"]))
             raise Exception("Receiving amount for this trade is less than the dust threshold amount and can't be broadcast.")
 
-        #Check balance is enough to cover trade.
+        #Check the coin daemon is loaded for the recv currency.
+        rpc = self.coins[trade.to_recv.currency]["rpc"]["sock"]
+        if rpc == None:
+            raise Exception("Client not loaded for " + trade.to_recv.currency)
+
+        #Check the coin daemon is loaded for the send currency.
         rpc = self.coins[trade.to_send.currency]["rpc"]["sock"]
+        if rpc == None:
+            raise Exception("Client not loaded for " + trade.to_send.currency)
+
+        #Check balance is enough to cover trade.
         balance = C(rpc.getbalance())
         if trade.to_send > balance:
             raise Exception("Insufficent balance to cover trade.")

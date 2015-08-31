@@ -8,6 +8,7 @@ import time
 import bitcoin.base58
 import struct
 import random
+import binascii
 
 class UNL():
     def __init__(self, net):
@@ -32,6 +33,14 @@ class UNL():
         }
 
     def connect(self, our_unl, their_unl):
+        #Figure out who should make the connection.
+        int_our_unl = int(binascii.hexlify(our_unl), 16)
+        int_their_unl = int(binascii.hexlify(their_unl), 16)
+        if int_our_unl > int_their_unl:
+            master = 1
+        else:
+            master = 0
+
         #Deconstruct binary UNLs into dicts.
         our_unl = self.deconstruct(our_unl)
         their_unl = self.deconstruct(their_unl)
@@ -50,17 +59,14 @@ class UNL():
 
         #This means the nodes are behind the same router.
         if our_unl["wan_ip"] == their_unl["wan_ip"]:
+            #Connect to LAN IP.
             our_unl["wan_ip"] = our_unl["lan_ip"]
             their_unl["wan_ip"] = their_unl["lan_ip"]
 
-        #Figure out who should make the connection.
-        if ip2int(our_unl["wan_ip"]) < ip2int(their_unl["wan_ip"]):
-            master = 1
-        else:
-            if ip2int(our_unl["wan_ip"]) == ip2int(their_unl["wan_ip"]):
-                master = 1
-            else:
-                master = 0
+            #Already behind NAT so no forwarding needed.
+            our_unl["node_type"] = "passive"
+            their_unl["node_type"] = "passive"
+            
 
         print("Master = " + str(master))
 
@@ -81,17 +87,20 @@ class UNL():
 
             #Try the next node type.
             if len(nodes):
-                #We will connect to them..
-                if master:
-                    if self.net.add_node(\
-                        their_unl["wan_ip"],
-                        their_unl["passive_port"],
-                        their_unl["node_type"],
-                        timeout=60
-                    ) != None:
-                        return their_unl["wan_ip"]
+                #We only want one connection.
+                if len(nodes) == 2:
+                    if not master:
+                        #They will connect to us.
+                        nodes.remove(their_unl)
                     else:
-                        return self.net.con_by_ip(their_unl["wan_ip"])
+                        #We will connect to them.
+                        nodes.remove(our_unl)
+
+                #Don't connect to ourself.
+                node = nodes[0]
+                if node == their_unl:
+                    if self.net.add_node(their_unl["wan_ip"], their_unl["passive_port"], their_unl["node_type"], timeout=60) != None:
+                        return their_unl["wan_ip"]
                 else:
                     #They will connect to us.
                     for i in range(0, 60):
@@ -100,7 +109,7 @@ class UNL():
                             return their_unl["wan_ip"]
 
                         time.sleep(1)
-
+                    
         #Invalid node types.
         raise Exception("Unable to setup direct connect.")
 
@@ -148,18 +157,28 @@ class UNL():
             return None
 
     def construct(self):
+        #Translate bind address.
+        wan_ip = get_wan_ip()
+        unspecific_bind = ["0.0.0.0", "127.0.0.1", wan_ip, "localhost"]
+        if self.net.passive_bind in unspecific_bind:
+            lan_ip = get_lan_ip(self.net.interface)
+        else:
+            lan_ip = self.net.passive_bind
+
+        #Generate UNL.
         unl = struct.pack("<BBBBHIIQI", \
             self.version,
             ord(self.net.node_type[0]),
             ord(self.net.nat_type[-1]),
             ord(self.net.forwarding_type[0]),
             self.net.passive_port,
-            ip2int(get_wan_ip()),
-            ip2int(self.net.passive_bind),
+            ip2int(wan_ip),
+            ip2int(lan_ip),
             int(time.time()),
             random.randrange(0, 2 ** (4 * 8))
         )
 
+        #Build checksum and make base58.
         checksum = hashlib.sha256(hashlib.sha256(unl).digest()).digest()
         checksum = checksum[0:4]
         unl = unl + checksum

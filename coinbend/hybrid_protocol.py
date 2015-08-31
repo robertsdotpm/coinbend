@@ -137,8 +137,14 @@ class HybridProtocol():
             """
             try:
                 green_address = GreenAddress(match_trade, ecdsa_1, ecdsa_2, ecdsa_encrypted, self.coins, self.config, None, deposit_txid)
-            except:
+            except Exception as e:
+                error = parse_exception(e)
+                print(error)
                 print("Match f")
+                print(deposit_txid)
+                print(match_trade)
+                exit()
+                #TODO: remove exit.
                 return []
 
             #Check unspent.
@@ -317,6 +323,7 @@ class HybridProtocol():
 
             #Nothing to match.
             if matched == None:
+                print("Nothing to match.")
                 return []
 
             #Build contract.
@@ -333,7 +340,10 @@ class HybridProtocol():
                 replies.append(our_handshake_msg)
 
                 #Return replies.
-                return replies
+                print("Returning matched replies.")
+                return [HybridReply(replies, "any", "source")]
+            else:
+                print("Format contract failed.")
         else:
             print("Match format was wrong!")
             print("Match format was wrong!")
@@ -539,12 +549,18 @@ class HybridProtocol():
         return temp_routes
 
     def format_routes(self):
+        #Routes should probably be replaced with UNL which is cleaner.
         #What address should be used for the route?
         global local_only
         global direct_node_type
         global direct_port
+        global direct_net
         if local_only:
-            bind_addr = get_lan_ip(self.net.interface)
+            if direct_net.passive_bind == "0.0.0.0":
+                bind_addr = get_lan_ip(direct_net.interface)
+            else:
+                bind_addr = direct_net.passive_bind
+
             if bind_addr == None:
                 raise Exception("Unable to get LAN IP for interface.")
         else:
@@ -562,6 +578,7 @@ class HybridProtocol():
             msg += " [simultaneous %s 0 %s" % (bind_addr, rendezvous["addr"])
             msg += " %s]" % (rendezvous["port"])
         else:
+            #Relay isn't supported yet.
             passive_nodes = []
             for node in self.net.inbound + self.net.outbound:
                 if node["type"] == "passive":
@@ -854,7 +871,7 @@ class HybridProtocol():
             print(contract_factory.contracts[contract_hash].trade.recv)
             print(contract_factory.contracts[contract_hash].download_amount)
 
-            return [msg]
+            return [HybridReply(msg, "any", "source")]
 
         print("e11111")
         return []
@@ -908,7 +925,8 @@ class HybridProtocol():
                 collateral_info.append(contract_factory.collateral_info[pub_key_1]["msg"])
 
             #Return reply.
-            return [self.new_return_setup_tx(contract_hash, setup_tx, collateral_info, ecdsa_1)] 
+            reply = self.new_return_setup_tx(contract_hash, setup_tx, collateral_info, ecdsa_1)
+            return [HybridReply(reply, "any", "source")]
 
         return []
 
