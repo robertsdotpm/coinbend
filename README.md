@@ -192,7 +192,7 @@ Papers:
 ### Development
 Want to contribute? Great!
 
-Contract me at matthew@roberts.pm if you need any help. Also, I'm still looking for a partner who wants to team up and help me get this to beta.
+Contact me at matthew@roberts.pm if you need any help. Also, I'm still looking for a partner who wants to team up and help me get this to beta.
 
 ### License
 There's no license yet but all the code will be release under LGPL soon (when I have time.) The UI won't be released under an open source license but it will be free to use and download.
